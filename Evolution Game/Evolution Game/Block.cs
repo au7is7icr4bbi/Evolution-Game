@@ -13,7 +13,6 @@ using Microsoft.Xna.Framework.Media;
 namespace Evolution_Game
 {
     /// <summary>
-    /// This is a game component that implements IUpdateable.
     /// </summary>
     public class Block
     {
@@ -43,6 +42,15 @@ namespace Evolution_Game
             sprite = new SpriteBatch(game.GraphicsDevice);
         }
 
+        public Block(Block b)
+        {
+            game = b.game;
+            type = b.type;
+            hitsToBreak = b.hitsToBreak;
+            tierLvl = b.tierLvl;
+            sprite = b.sprite;
+        }
+
         public void LoadContent()
         {
             if (type != bType.AIR)
@@ -62,6 +70,12 @@ namespace Evolution_Game
                 sprite.Draw(texture, position, Color.White);
                 sprite.End();
             }
+        }
+
+        public void setCoords(float x, float y)
+        {
+            position.X = x;
+            position.Y = y;
         }
     }
 }

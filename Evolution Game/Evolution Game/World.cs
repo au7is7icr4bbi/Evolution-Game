@@ -50,11 +50,10 @@ namespace Evolution_Game
 
         public void addBiomes()
         {
-            /*
-            biomes.Add(new Biome(this.Game, Biome.nameId.NORMAL, Biome.typeId.ATMOS, width, height / 2,
-                new Vector2(0, 0)));*/
-            biomes.Add(new Biome(this.Game, Biome.nameId.NORMAL, Biome.typeId.GROUND, 1920, 200,
-                new Vector2(0, 1080 / 2.0f)));
+            biomes.Add(new Biome(this.Game, Biome.nameId.NORMAL, Biome.typeId.ATMOS, 2732, 1536,
+                new Vector2(0, 0)));
+            biomes.Add(new Biome(this.Game, Biome.nameId.NORMAL, Biome.typeId.GROUND, 2732, 200,
+                new Vector2(1366 / 2.0f, 650)));
         }
 
         protected override void LoadContent()

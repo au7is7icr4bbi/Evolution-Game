@@ -27,7 +27,7 @@ namespace Evolution_Game
             graphics.PreferredBackBufferWidth = 1366;
             graphics.PreferredBackBufferHeight = 768;
 
-            //graphics.IsFullScreen = true;
+            graphics.IsFullScreen = true;
 
             Content.RootDirectory = "Content";
         }
@@ -41,8 +41,9 @@ namespace Evolution_Game
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-            homeWorld = new World(this, 2000, 2000);
+            homeWorld = new World(this, 40000, 40000);
             Components.Add(homeWorld);
+            
             player = new Player(this, 100, 0, new Inventory(this),
                 new Vector2(graphics.PreferredBackBufferWidth / 2.0f, graphics.PreferredBackBufferHeight / 2.0f));
             Components.Add(player);
@@ -58,10 +59,6 @@ namespace Evolution_Game
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
-            /*
-            homeWorld.LoadContent();
-            player.LoadContent();
-            */
 
             // TODO: use this.Content to load your game content here
         }
@@ -104,11 +101,6 @@ namespace Evolution_Game
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             // TODO: Add your drawing code here
-            /*
-            spriteBatch.Begin();
-                homeWorld.Draw(spriteBatch);
-                player.Draw(spriteBatch);
-            spriteBatch.End();*/
 
             base.Draw(gameTime);
         }
