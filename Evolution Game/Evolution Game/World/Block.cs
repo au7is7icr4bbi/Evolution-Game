@@ -18,6 +18,7 @@ namespace Evolution_Game
     {
         public enum bType { AIR, WATER, DIRT, MUD, WOOD, STONE, COAL, CLAY, COPPER, TIN, IRON, SILVER, GOLD };
         private bType type;
+        private String fileStr;
         private Vector2 position;
         private int hitsToBreak;
         private int tierLvl;
@@ -40,6 +41,8 @@ namespace Evolution_Game
             hitsToBreak = hits;
             tierLvl = tier;
             sprite = new SpriteBatch(game.GraphicsDevice);
+
+            initFileString();
         }
 
         public Block(Block b)
@@ -49,12 +52,48 @@ namespace Evolution_Game
             hitsToBreak = b.hitsToBreak;
             tierLvl = b.tierLvl;
             sprite = b.sprite;
+
+            initFileString();
+        }
+
+        // sets the variable for the 2 char string that will represent the block in biome file/s
+        public void initFileString()
+        {
+            switch (type)
+            {
+                case bType.DIRT:
+                    fileStr = "db";
+                    break;
+
+                case bType.AIR:
+                    fileStr = "ab";
+                    break;
+
+                case bType.MUD:
+                    fileStr = "mb";
+                    break;
+
+                case bType.WATER:
+                    fileStr = "wb";
+                    break;
+            }
+        }
+
+        public String getFileString()
+        {
+            return fileStr;
         }
 
         public void LoadContent()
         {
             if (type != bType.AIR)
                 texture = game.Content.Load<Texture2D>("block tex/" + type.ToString().ToLower() + "_tex");
+        }
+
+        public void setCoords(float x, float y)
+        {
+            position.X = x;
+            position.Y = y;
         }
 
         public void Update(GameTime gameTime)
@@ -70,12 +109,6 @@ namespace Evolution_Game
                 sprite.Draw(texture, position, Color.White);
                 sprite.End();
             }
-        }
-
-        public void setCoords(float x, float y)
-        {
-            position.X = x;
-            position.Y = y;
-        }
+        } 
     }
 }

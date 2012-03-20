@@ -48,7 +48,9 @@ namespace Evolution_Game
             width = bWidth;
             height = bHeight;
             position = bPosition;
-            generateBiome();
+            
+            generateBiome(); // generates the biome based on data
+            BiomeFileWriter();
         }
 
         public void setBlockTypes()
@@ -106,16 +108,26 @@ namespace Evolution_Game
         }
 
         // write the generated biome data to a text file
-        /*
-        public void BiomeFileWriter
+        public void BiomeFileWriter()
         {
-            StreamWriter sw = new StreamWriter(name + ".txt" );
+
+            StreamWriter tw = new StreamWriter("../../../../Evolution GameContent/world data/biome data/" + 
+                name.ToString().ToLower() + "_" + type.ToString().ToLower() + ".txt");
+            
+            tw.WriteLine(blocks.Count); // write the current number of blocks in the biome
+
+            // write in each block
+            for (int x = 0; x < blocks.Count; x++)
             {
-                tw.WriteLine();
-                tw.close();
+                if (x % width == 0)
+                {
+                    tw.Write("\n");
+                }
+                tw.Write(blocks[x].getFileString() + "|");
             }
+            tw.Close();
+
         }
-        */
 
         // generates a random number
         static int generateRandomNumber()
