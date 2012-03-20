@@ -1,0 +1,10 @@
+C:\Users\Matt\Desktop\Personal Projects\Programming\Evolution Game\Evolution Game\Evolution Game\obj\x86\Debug\ResolveAssemblyReference.cache
+C:\Users\Matt\Desktop\Personal Projects\Programming\Evolution Game\Evolution Game\Evolution Game\obj\x86\Debug\Microsoft.Xna.Framework.RuntimeProfile.txt
+C:\Users\Matt\Desktop\Personal Projects\Programming\Evolution Game\Evolution Game\Evolution Game\bin\x86\Debug\Evolution Game.exe
+C:\Users\Matt\Desktop\Personal Projects\Programming\Evolution Game\Evolution Game\Evolution Game\bin\x86\Debug\Evolution Game.pdb
+C:\Users\Matt\Desktop\Personal Projects\Programming\Evolution Game\Evolution Game\Evolution Game\obj\x86\Debug\Evolution Game.exe
+C:\Users\Matt\Desktop\Personal Projects\Programming\Evolution Game\Evolution Game\Evolution Game\obj\x86\Debug\Evolution Game.pdb
+C:\Users\Matt\Desktop\Personal Projects\Programming\Evolution Game\Evolution Game\Evolution Game\bin\x86\Debug\Content\player tex\player_tex.xnb
+C:\Users\Matt\Desktop\Personal Projects\Programming\Evolution Game\Evolution Game\Evolution Game\bin\x86\Debug\Content\block tex\dirt_tex.xnb
+C:\Users\Matt\Desktop\Personal Projects\Programming\Evolution Game\Evolution Game\Evolution Game\bin\x86\Debug\Content\block tex\water_tex.xnb
+C:\Users\Matt\Desktop\Personal Projects\Programming\Evolution Game\Evolution Game\Evolution Game\bin\x86\Debug\Content\block tex\mud_tex.xnb
