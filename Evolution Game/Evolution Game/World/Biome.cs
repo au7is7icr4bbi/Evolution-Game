@@ -1,4 +1,5 @@
 using System;
+using System.IO; // allows the writing of biome data to a text file
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
@@ -104,8 +105,17 @@ namespace Evolution_Game
             }
         }
 
-        
-
+        // write the generated biome data to a text file
+        /*
+        public void BiomeFileWriter
+        {
+            StreamWriter sw = new StreamWriter(name + ".txt" );
+            {
+                tw.WriteLine();
+                tw.close();
+            }
+        }
+        */
 
         // generates a random number
         static int generateRandomNumber()
