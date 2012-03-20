@@ -29,7 +29,6 @@ namespace Evolution_Game
         private List<int> spawnPercent;
         static Random r = new Random();
         Game game;
-        // hello
 
         public Biome(Game g)
         {
