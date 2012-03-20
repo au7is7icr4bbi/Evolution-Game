@@ -15,7 +15,7 @@ namespace Evolution_Game
     /// <summary>
     /// This is a game component that implements IUpdateable.
     /// </summary>
-    public class World : Microsoft.Xna.Framework.GameComponent
+    public class World : Microsoft.Xna.Framework.DrawableGameComponent
     {
         private int height;
         private int width;
@@ -50,13 +50,14 @@ namespace Evolution_Game
 
         public void addBiomes()
         {
+            /*
             biomes.Add(new Biome(this.Game, Biome.nameId.NORMAL, Biome.typeId.ATMOS, width, height / 2,
-                new Vector2(0, 0)));
+                new Vector2(0, 0)));*/
             biomes.Add(new Biome(this.Game, Biome.nameId.NORMAL, Biome.typeId.GROUND, 1920, 200,
                 new Vector2(0, 1080 / 2.0f)));
         }
 
-        public void LoadContent()
+        protected override void LoadContent()
         {
             foreach (Biome b in biomes)
             {
@@ -75,11 +76,11 @@ namespace Evolution_Game
             base.Update(gameTime);
         }
 
-        public void Draw(SpriteBatch sprite)
+        public override void Draw(GameTime gameTime)
         {
             foreach (Biome b in biomes)
             {
-                b.Draw(sprite);
+                b.Draw();
             }
         }
     }

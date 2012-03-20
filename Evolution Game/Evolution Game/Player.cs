@@ -15,17 +15,8 @@ namespace Evolution_Game
     /// <summary>
     /// This is a game component that implements IUpdateable.
     /// </summary>
-    public class Player : Microsoft.Xna.Framework.GameComponent
+    public class Player : Character
     {
-        private int health;
-        private int mana;
-        private Inventory inventory;
-        private Texture2D texture;
-        private const int moveSpeed = 2;
-        private const int jumpHeight = 20;
-        private Vector2 position;
-        private SpriteBatch sprite;
-
         public Player(Game game)
             : base(game)
         {
@@ -37,8 +28,12 @@ namespace Evolution_Game
         {
             health = pHealth;
             mana = pMana;
-            inventory = pInventory;
+            items = pInventory;
             position = pPosition;
+            box = new BoundingBox();
+            physics = new Physics();
+            moveSpeed = 80.0f;
+            jumpSpeed = 80.0f;
         }
 
         /// <summary>
@@ -48,11 +43,12 @@ namespace Evolution_Game
         public override void Initialize()
         {
             // TODO: Add your initialization code here
+            sprite = new SpriteBatch(Game.GraphicsDevice);
 
             base.Initialize();
         }
 
-        public void LoadContent()
+        protected override void LoadContent()
         {
             sprite = new SpriteBatch(Game.GraphicsDevice);
             texture = Game.Content.Load<Texture2D>("player tex/player_tex");
@@ -65,21 +61,32 @@ namespace Evolution_Game
         public override void Update(GameTime gameTime)
         {
             // TODO: Add your update code here
-
             if (Keyboard.GetState().IsKeyDown(Keys.D))
-                position.X += moveSpeed;
+                position = physics.horizontalMotion(position, moveSpeed, gameTime);
 
             if (Keyboard.GetState().IsKeyDown(Keys.A))
-                position.X -= moveSpeed;
+                position = physics.horizontalMotion(position, -moveSpeed, gameTime);
+
+            if (Keyboard.GetState().IsKeyDown(Keys.Space))
+            {
+                position = physics.dynamicVerticalMotion(position, jumpSpeed, gameTime);
+                jumpSpeed = physics.Velocity;
+            }
+
+            if (Keyboard.GetState().IsKeyUp(Keys.Space))
+            {
+                jumpSpeed = 80.0f;
+            }
 
             base.Update(gameTime);
         }
 
-        public void Draw(SpriteBatch sprite)
+        public override void Draw(GameTime gameTime)
         {
-            //sprite.Begin();
-                sprite.Draw(texture, position, Color.White);
-            //sprite.End();
+            sprite.Begin();
+            sprite.Draw(texture, position, Color.White);
+            sprite.End();
+            base.Draw(gameTime);
         }
     }
 }

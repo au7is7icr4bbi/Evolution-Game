@@ -15,7 +15,7 @@ namespace Evolution_Game
     /// <summary>
     /// This is a game component that implements IUpdateable.
     /// </summary>
-    public class Biome : Microsoft.Xna.Framework.GameComponent
+    public class Biome
     {
         public enum nameId { NORMAL, JUNGLE, DESERT, OCEAN, HELL, VOLCANIC, SNOW };
         public enum typeId { ATMOS, GROUND, MIDGROUND, LOWGROUND };
@@ -28,16 +28,17 @@ namespace Evolution_Game
         private List<Block> blocks;
         private List<int> spawnPercent;
         static Random r = new Random();
+        Game game;
 
-        public Biome(Game game)
-            : base(game)
+        public Biome(Game g)
         {
             // TODO: Construct any child components here
+            game = g;
         }
 
-        public Biome(Game game, nameId bName, typeId bType, int bWidth, int bHeight, Vector2 bPosition)
-            : base(game)
+        public Biome(Game g, nameId bName, typeId bType, int bWidth, int bHeight, Vector2 bPosition)
         {
+            game = g;
             name = bName;
             type = bType;
             blocktypes = new List<Block.bType>();
@@ -48,17 +49,6 @@ namespace Evolution_Game
             position = bPosition;
 
             generateBiome();
-        }
-
-        /// <summary>
-        /// Allows the game component to perform any initialization it needs to before starting
-        /// to run.  This is where it can query for any required services and load content.
-        /// </summary>
-        public override void Initialize()
-        {
-            // TODO: Add your initialization code here\
-
-            base.Initialize();
         }
 
         public void setBlockTypes()
@@ -102,8 +92,8 @@ namespace Evolution_Game
             {
                 for (int y = 0; y < height; y += 15)
                 {
-                    Block block = new Block(this.Game, blocktypes.ElementAt(generateBlock()), 
-                        new Vector2(x, Game.GraphicsDevice.DisplayMode.Height - y), 5, 1);
+                    Block block = new Block(game, blocktypes.ElementAt(generateBlock()), 
+                        new Vector2(x, game.GraphicsDevice.DisplayMode.Height - y), 5, 1);
 
                     blocks.Add(block);
                 }   
@@ -151,23 +141,12 @@ namespace Evolution_Game
             }
         }
 
-        /// <summary>
-        /// Allows the game component to update itself.
-        /// </summary>
-        /// <param name="gameTime">Provides a snapshot of timing values.</param>
-        public override void Update(GameTime gameTime)
-        {
-            // TODO: Add your update code here
-
-            base.Update(gameTime);
-        }
-
         // calls the block draw method to render the blocks on screen
-        public void Draw(SpriteBatch sprite)
+        public void Draw()
         {
             foreach (Block b in blocks)
             {
-                b.Draw(sprite);
+                b.Draw();
             }
         }
     }

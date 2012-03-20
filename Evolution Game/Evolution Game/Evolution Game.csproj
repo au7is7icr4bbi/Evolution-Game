@@ -109,6 +109,8 @@
   <ItemGroup>
     <Compile Include="Biome.cs" />
     <Compile Include="Block.cs" />
+    <Compile Include="Character.cs" />
+    <Compile Include="Physics.cs" />
     <Compile Include="Inventory.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

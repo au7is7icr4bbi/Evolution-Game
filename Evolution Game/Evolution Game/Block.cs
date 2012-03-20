@@ -15,7 +15,7 @@ namespace Evolution_Game
     /// <summary>
     /// This is a game component that implements IUpdateable.
     /// </summary>
-    public class Block : Microsoft.Xna.Framework.GameComponent
+    public class Block
     {
         public enum bType { AIR, WATER, DIRT, MUD, WOOD, STONE, COAL, CLAY, COPPER, TIN, IRON, SILVER, GOLD };
         private bType type;
@@ -24,59 +24,43 @@ namespace Evolution_Game
         private int tierLvl;
         private Texture2D texture;
         private BoundingBox box;
+        private Game game;
         SpriteBatch sprite;
 
-        public Block(Game game)
-            : base(game)
+        public Block(Game g)
         {
             // TODO: Construct any child components here
+            game = g;
         }
 
-        public Block(Game game, bType blockType, Vector2 pos, int hits, int tier) : base(game)
+        public Block(Game g, bType blockType, Vector2 pos, int hits, int tier)
         {
+            game = g;
             type = blockType;
             position = pos;
             hitsToBreak = hits;
-            tierLvl = tier;  
-        }
-
-        /// <summary>
-        /// Allows the game component to perform any initialization it needs to before starting
-        /// to run.  This is where it can query for any required services and load content.
-        /// </summary>
-        public override void Initialize()
-        {
-            // TODO: Add your initialization code here
-            
-            base.Initialize();
+            tierLvl = tier;
+            sprite = new SpriteBatch(game.GraphicsDevice);
         }
 
         public void LoadContent()
         {
-            sprite = new SpriteBatch(Game.GraphicsDevice);
             if (type != bType.AIR)
-                texture = Game.Content.Load<Texture2D>("block tex/" + type.ToString().ToLower() + "_tex");
+                texture = game.Content.Load<Texture2D>("block tex/" + type.ToString().ToLower() + "_tex");
         }
 
-        /// <summary>
-        /// Allows the game component to update itself.
-        /// </summary>
-        /// <param name="gameTime">Provides a snapshot of timing values.</param>
-        public override void Update(GameTime gameTime)
+        public void Update(GameTime gameTime)
         {
-            // TODO: Add your update code here
-
-            base.Update(gameTime);
         }
 
         // draws the block in its set position
-        public void Draw(SpriteBatch sprite)
+        public void Draw()
         {
             if (texture != null)
             {
-                //sprite.Begin();
+                sprite.Begin();
                 sprite.Draw(texture, position, Color.White);
-                //sprite.End();
+                sprite.End();
             }
         }
     }
