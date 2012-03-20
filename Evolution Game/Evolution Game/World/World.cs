@@ -21,6 +21,9 @@ namespace Evolution_Game
         private int width;
         private int numBlocks;
         private List<Biome> biomes;
+        private float cameraPosition;
+        private Player player;
+        private SpriteBatch spriteBatch;
 
         public World(Game game)
             : base(game)
@@ -28,12 +31,14 @@ namespace Evolution_Game
             // TODO: Construct any child components here
         }
 
-        public World(Game game, int wHeight, int wWidth)
+        public World(Game game, int wHeight, int wWidth, SpriteBatch batch, Player p)
             : base(game)
         {
             height = wHeight;
             width = wWidth;
             biomes = new List<Biome>();
+            spriteBatch = batch;
+            player = p;
             addBiomes();
         }
 
@@ -44,6 +49,7 @@ namespace Evolution_Game
         public override void Initialize()
         {
             // TODO: Add your initialization code here
+            player.Initialize();
 
             base.Initialize();
         }
@@ -59,6 +65,7 @@ namespace Evolution_Game
 
         protected override void LoadContent()
         {
+            player.LoadContent();
             foreach (Biome b in biomes)
             {
                 b.LoadContent();
@@ -72,16 +79,45 @@ namespace Evolution_Game
         public override void Update(GameTime gameTime)
         {
             // TODO: Add your update code here
+            player.Update(gameTime);
 
             base.Update(gameTime);
         }
 
         public override void Draw(GameTime gameTime)
         {
+            ScrollCamera(spriteBatch.GraphicsDevice.Viewport);
+            Matrix cameraTransform = Matrix.CreateTranslation(-cameraPosition, 0.0f, 0.0f);
+            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, null, null, cameraTransform);
+            
             foreach (Biome b in biomes)
             {
-                b.Draw();
+                b.Draw(spriteBatch, cameraPosition);
             }
+            player.Draw(spriteBatch);
+            spriteBatch.End();
+            
+        }
+        
+        private void ScrollCamera(Viewport viewport) 
+        {
+            const float ViewMargin = 0.5f;
+
+            // Calculate the edges of the screen.
+            float marginWidth = viewport.Width * ViewMargin;
+            float marginLeft = cameraPosition + marginWidth;
+            float marginRight = cameraPosition + viewport.Width - marginWidth;
+
+            // Calculate how far to scroll when the player is near the edges of the screen.
+            float cameraMovement = 0.0f;
+            if (player.Position.X < marginLeft)
+                cameraMovement = player.Position.X - marginLeft;
+            else if (player.Position.X > marginRight)
+                cameraMovement = player.Position.X - marginRight;
+
+            // Update the camera position, but prevent scrolling off the ends of the level.
+            float maxCameraPosition = 15 * width - viewport.Width;
+            cameraPosition = MathHelper.Clamp(cameraPosition + cameraMovement, 0.0f, maxCameraPosition);
         }
     }
 }

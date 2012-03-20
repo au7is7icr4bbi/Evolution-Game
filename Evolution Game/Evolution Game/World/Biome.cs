@@ -28,6 +28,7 @@ namespace Evolution_Game
         private List<Block> blocktypes;
         private List<Block> blocks;
         private List<int> spawnPercent;
+        private Layer[] layers;
         static Random r = new Random();
         Game game;
 
@@ -39,6 +40,11 @@ namespace Evolution_Game
 
         public Biome(Game g, nameId bName, typeId bType, int bWidth, int bHeight, Vector2 bPosition)
         {
+
+            layers = new Layer[1];
+            layers[0] = new Layer(g.Content, "biome tex/" + name + "_Layer0", 0.8f);
+            //layers[1] = new Layer(g.Content, "biome tex/" + name + "Layer1", 0.5f);
+            //layers[2] = new Layer(g.Content, "biome tex/" + name + "Layer2", 0.8f);
             game = g;
             name = bName;
             type = bType;
@@ -171,12 +177,12 @@ namespace Evolution_Game
         }
 
         // calls the block draw method to render the blocks on screen
-        public void Draw()
+        public void Draw(SpriteBatch spriteBatch, float cameraPosition)
         {
+            for (int i = 0; i < layers.Length; ++i)
+                layers[i].Draw(spriteBatch, cameraPosition);
             foreach (Block b in blocks)
-            {
-                b.Draw();
-            }
+                b.Draw(spriteBatch);
         }
     }
 }

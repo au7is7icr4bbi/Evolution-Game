@@ -11,7 +11,7 @@ using Microsoft.Xna.Framework.Media;
 
 namespace Evolution_Game
 {
-    public abstract class Character : Microsoft.Xna.Framework.DrawableGameComponent
+    public abstract class Character
     {
         protected int id;
         protected int health;
@@ -19,35 +19,32 @@ namespace Evolution_Game
         protected Inventory items;
         protected Texture2D texture;
         protected Vector2 position;
-        protected SpriteBatch sprite;
+        public Vector2 Position { get { return position; } }
         protected Physics physics;
         protected BoundingBox box;
         protected float moveSpeed;
         protected float jumpSpeed;
+        protected Game game;
 
-        public Character(Game game)
-            : base(game)
+        public Character()
         {
         }
 
-        public override void Initialize()
+        public virtual void Initialize()
         {
-            base.Initialize();
         }
 
-        protected override void LoadContent()
+        public virtual void LoadContent()
         {
-            base.LoadContent();
         }
 
-        public override void Update(GameTime gameTime)
+        public virtual void Update(GameTime gameTime)
         {
-            base.Update(gameTime);
         }
 
-        public override void Draw(GameTime gameTime)
+        public virtual void Draw(SpriteBatch spriteBatch)
         {
-            base.Draw(gameTime);
+            
         }
     }
 }

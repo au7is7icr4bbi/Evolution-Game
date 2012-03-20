@@ -2,3 +2,4 @@ Content\block tex\dirt_tex.xnb
 Content\player tex\player_tex.xnb
 Content\block tex\water_tex.xnb
 Content\block tex\mud_tex.xnb
+Content\biome tex\NORMAL_Layer0.xnb

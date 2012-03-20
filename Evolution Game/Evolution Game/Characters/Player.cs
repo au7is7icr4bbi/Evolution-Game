@@ -17,14 +17,13 @@ namespace Evolution_Game
     /// </summary>
     public class Player : Character
     {
-        public Player(Game game)
-            : base(game)
+        public Player(Game g)
         {
             // TODO: Construct any child components here
+            game = g;
         }
 
-        public Player(Game game, int pHealth, int pMana, Inventory pInventory, Vector2 pPosition)
-            : base(game)
+        public Player(Game g, int pHealth, int pMana, Inventory pInventory, Vector2 pPosition)
         {
             health = pHealth;
             mana = pMana;
@@ -34,6 +33,7 @@ namespace Evolution_Game
             physics = new Physics();
             moveSpeed = 80.0f;
             jumpSpeed = 80.0f;
+            game = g;
         }
 
         /// <summary>
@@ -43,15 +43,11 @@ namespace Evolution_Game
         public override void Initialize()
         {
             // TODO: Add your initialization code here
-            sprite = new SpriteBatch(Game.GraphicsDevice);
-
-            base.Initialize();
         }
 
-        protected override void LoadContent()
+        public override void LoadContent()
         {
-            sprite = new SpriteBatch(Game.GraphicsDevice);
-            texture = Game.Content.Load<Texture2D>("player tex/player_tex");
+            texture = game.Content.Load<Texture2D>("player tex/player_tex");
         }
 
         /// <summary>
@@ -77,16 +73,11 @@ namespace Evolution_Game
             {
                 jumpSpeed = 80.0f;
             }
-
-            base.Update(gameTime);
         }
 
-        public override void Draw(GameTime gameTime)
+        public override void Draw(SpriteBatch spriteBatch)
         {
-            sprite.Begin();
-            sprite.Draw(texture, position, Color.White);
-            sprite.End();
-            base.Draw(gameTime);
+            spriteBatch.Draw(texture, position, Color.White);
         }
     }
 }

@@ -25,7 +25,6 @@ namespace Evolution_Game
         private Texture2D texture;
         private BoundingBox box;
         private Game game;
-        SpriteBatch sprite;
 
         public Block(Game g)
         {
@@ -40,7 +39,6 @@ namespace Evolution_Game
             position = pos;
             hitsToBreak = hits;
             tierLvl = tier;
-            sprite = new SpriteBatch(game.GraphicsDevice);
 
             initFileString();
         }
@@ -51,7 +49,6 @@ namespace Evolution_Game
             type = b.type;
             hitsToBreak = b.hitsToBreak;
             tierLvl = b.tierLvl;
-            sprite = b.sprite;
 
             initFileString();
         }
@@ -101,13 +98,11 @@ namespace Evolution_Game
         }
 
         // draws the block in its set position
-        public void Draw()
+        public void Draw(SpriteBatch spriteBatch)
         {
             if (texture != null)
             {
-                sprite.Begin();
-                sprite.Draw(texture, position, Color.White);
-                sprite.End();
+                spriteBatch.Draw(texture, position, Color.White);
             }
         } 
     }
