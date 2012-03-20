@@ -47,7 +47,6 @@ namespace Evolution_Game
             width = bWidth;
             height = bHeight;
             position = bPosition;
-
             generateBiome();
         }
 
@@ -88,13 +87,16 @@ namespace Evolution_Game
         public void generateBiome()
         {
             setBlockTypes();
-            for (int x = 0; x < width; x += 15)
-            {
-                for (int y = 0; y < height; y += 15)
-                {
-                    Block block = new Block(game, blocktypes.ElementAt(generateBlock()), 
-                        new Vector2(x, game.GraphicsDevice.DisplayMode.Height - y), 5, 1);
 
+            float endX = position.X + width / 2.0f;
+            float endY = position.Y + height / 2.0f;
+
+            for (float startX = position.X - width / 2.0f; startX < endX; startX += 15)
+            {
+                for (float startY = position.Y - height / 2.0f; startY < endY; startY += 15)
+                {
+                    Block block = new Block(game, blocktypes.ElementAt(generateBlock()),
+                        new Vector2(startX, startY), 5, 1);
                     blocks.Add(block);
                 }   
             }
