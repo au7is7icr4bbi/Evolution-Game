@@ -57,9 +57,9 @@ namespace Evolution_Game
         // added biomes MUST be a MULTIPLE of 15, otherwise there are calculation problems
         public void addBiomes()
         {
-            biomes.Add(new Biome(this.Game, Biome.nameId.NORMAL, Biome.typeId.ATMOS, 2700, 1500,
+            biomes.Add(new Biome(this.Game, Biome.nameId.NORMAL, Biome.typeId.ATMOS, new Vector2(1,1), 2700, 1500,
                 new Vector2(0, 0)));
-            biomes.Add(new Biome(this.Game, Biome.nameId.NORMAL, Biome.typeId.GROUND, 2700, 300,
+            biomes.Add(new Biome(this.Game, Biome.nameId.NORMAL, Biome.typeId.GROUND, new Vector2(1,2), 2700, 300,
                 new Vector2(1366 / 2.0f, 650)));
         }
 

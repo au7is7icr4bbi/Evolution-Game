@@ -32,13 +32,11 @@ namespace Evolution_Game
             game = g;
         }
 
-        public Block(Game g, bType blockType, Vector2 pos, int hits, int tier)
+        public Block(Game g, bType blockType, Vector2 pos)
         {
             game = g;
             type = blockType;
             position = pos;
-            hitsToBreak = hits;
-            tierLvl = tier;
 
             initFileString();
         }
@@ -47,8 +45,6 @@ namespace Evolution_Game
         {
             game = b.game;
             type = b.type;
-            hitsToBreak = b.hitsToBreak;
-            tierLvl = b.tierLvl;
 
             initFileString();
         }
@@ -60,18 +56,57 @@ namespace Evolution_Game
             {
                 case bType.DIRT:
                     fileStr = "db";
+                    hitsToBreak = 6;
+                    tierLvl = 1;
                     break;
 
                 case bType.AIR:
                     fileStr = "ab";
+                    hitsToBreak = 0;
+                    tierLvl = 0;
                     break;
 
                 case bType.MUD:
                     fileStr = "mb";
+                    hitsToBreak = 10;
+                    tierLvl = 1;
                     break;
 
                 case bType.WATER:
                     fileStr = "wb";
+                    hitsToBreak = 0;
+                    tierLvl = 0;
+                    break;
+            }
+        }
+
+        // based on the string initialise block vars to appropriate values
+        public Block(String fStr, Vector2 pos)
+        {
+            switch (fStr)
+            {
+                case "db":
+                    type = bType.DIRT;
+                    hitsToBreak = 6;
+                    tierLvl = 1;
+                    break;
+
+                case "ab":
+                    type = bType.AIR;
+                    hitsToBreak = 0;
+                    tierLvl = 0;
+                    break;
+
+                case "mb":
+                    type = bType.MUD;
+                    hitsToBreak = 10;
+                    tierLvl = 1;
+                    break;
+
+                case "wb":
+                    type = bType.WATER;
+                    hitsToBreak = 0;
+                    tierLvl = 0;
                     break;
             }
         }

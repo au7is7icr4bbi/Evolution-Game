@@ -20,6 +20,7 @@ namespace Evolution_Game
         SpriteBatch spriteBatch;
         World homeWorld;
         Player player;
+        Menu mainMenu;
 
         public Game1()
         {
@@ -48,6 +49,8 @@ namespace Evolution_Game
             homeWorld = new World(this, 40000, 40000, spriteBatch, player);
             homeWorld.DrawOrder = 0;
             Components.Add(homeWorld);
+            mainMenu = new Menu(this);
+            Components.Add(mainMenu);
 
             base.Initialize();
         }

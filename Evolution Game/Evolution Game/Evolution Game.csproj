@@ -107,6 +107,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Menu.cs" />
     <Compile Include="World\Biome.cs" />
     <Compile Include="World\Block.cs" />
     <Compile Include="Characters\Character.cs" />
