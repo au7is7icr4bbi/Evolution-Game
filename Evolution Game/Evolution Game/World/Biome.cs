@@ -22,6 +22,7 @@ namespace Evolution_Game
         public enum typeId { ATMOS, GROUND, MIDGROUND, LOWGROUND };
         private nameId name;
         private typeId type;
+        Vector2 segment;
         private int width;
         private int height;
         private Vector2 position;
@@ -38,9 +39,8 @@ namespace Evolution_Game
             game = g;
         }
 
-        public Biome(Game g, nameId bName, typeId bType, int bWidth, int bHeight, Vector2 bPosition)
+        public Biome(Game g, nameId bName, typeId bType, Vector2 bSegment, int bWidth, int bHeight, Vector2 bPosition)
         {
-
             layers = new Layer[1];
             layers[0] = new Layer(g.Content, "biome tex/" + name + "_Layer0", 0.8f);
             //layers[1] = new Layer(g.Content, "biome tex/" + name + "Layer1", 0.5f);
@@ -51,12 +51,12 @@ namespace Evolution_Game
             blocktypes = new List<Block>();
             blocks = new List<Block>();
             spawnPercent = new List<int>();
+            segment = bSegment;
             width = bWidth;
             height = bHeight;
             position = bPosition;
             
             generateBiome(); // generates the biome based on data
-            BiomeFileWriter();
         }
 
         public void setBlockTypes()
@@ -69,10 +69,10 @@ namespace Evolution_Game
                     {
                         // at ground level
                         case Biome.typeId.GROUND:
-                            blocktypes.Add(new Block(game, Block.bType.AIR, new Vector2(), 5, 1));
-                            blocktypes.Add(new Block(game, Block.bType.DIRT, new Vector2(), 5, 1));
-                            blocktypes.Add(new Block(game, Block.bType.WATER, new Vector2(), 5, 1));
-                            blocktypes.Add(new Block(game, Block.bType.MUD, new Vector2(), 5, 1));
+                            blocktypes.Add(new Block(game, Block.bType.AIR, new Vector2()));
+                            blocktypes.Add(new Block(game, Block.bType.DIRT, new Vector2()));
+                            blocktypes.Add(new Block(game, Block.bType.WATER, new Vector2()));
+                            blocktypes.Add(new Block(game, Block.bType.MUD, new Vector2()));
 
                             // set percentage liklihood of spawning blocks within the biome
                             // they are in the same order that the blocks above were added
@@ -83,7 +83,7 @@ namespace Evolution_Game
                         break;
 
                         case Biome.typeId.ATMOS:
-                            blocktypes.Add(new Block(game, Block.bType.AIR, new Vector2(), 5, 1));
+                            blocktypes.Add(new Block(game, Block.bType.AIR, new Vector2()));
                             spawnPercent.Add(100);
 
                         break;
@@ -111,28 +111,61 @@ namespace Evolution_Game
                     i++;
                 }
             }
+
+            biomeFileWriter();
         }
 
         // write the generated biome data to a text file
-        public void BiomeFileWriter()
+        public void biomeFileWriter()
         {
 
-            StreamWriter tw = new StreamWriter("../../../../Evolution GameContent/world data/biome data/" + 
-                name.ToString().ToLower() + "_" + type.ToString().ToLower() + ".txt");
+            StreamWriter sw = new StreamWriter("../../../../Evolution GameContent/world data/biome data/" + 
+                name.ToString().ToLower() + "_" + type.ToString().ToLower() + ".bio");
             
-            tw.WriteLine(blocks.Count); // write the current number of blocks in the biome
+            sw.WriteLine(blocks.Count); // write the current number of blocks in the biome
 
             // write in each block
             for (int x = 0; x < blocks.Count; x++)
             {
                 if (x % width == 0)
                 {
-                    tw.Write("\n");
+                    sw.Write("\n");
                 }
-                tw.Write(blocks[x].getFileString() + "|");
+                sw.Write(blocks[x].getFileString() + "|");
             }
-            tw.Close();
+            sw.Close();
+        }
 
+        // reads in biome data file
+        public void loadBiome(String fileName)
+        {
+            int numBlocks = 0;
+            int y = 0;
+            char[] delim = new char[1];
+            delim[0] = '|';
+            StreamReader sr = new StreamReader("../../../../Evolution GameContent/world data/biome data/" + fileName);
+
+            try
+            {
+                numBlocks = Convert.ToInt32(sr.ReadLine());
+            }
+            catch (FormatException e)
+            {
+                Console.WriteLine("Invalid File Format");
+            }
+
+            for (String temp = null; (temp = sr.ReadLine()) != null;)
+            {
+                String[] items = temp.Split(delim);
+
+                for (int x = 0; x < items.Length; x++)
+                {
+                    Block newBlock = new Block(items[x], new Vector2(x*15, y));
+                    blocks.Add(newBlock);
+                }
+                y +=15;
+            }
+            sr.Close();
         }
 
         // generates a random number
