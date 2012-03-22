@@ -24,6 +24,8 @@ namespace Evolution_Game
         Texture2D load_game;
         Texture2D exit_game;
         private bool noDraw;
+        private bool loadG;
+        private bool newG;
 
         public Menu(Game game)
             : base(game)
@@ -38,9 +40,10 @@ namespace Evolution_Game
         /// </summary>
         public override void Initialize()
         {
-            // TODO: Add your initialization code here
-            
+            // TODO: Add your initialization code here        
             noDraw = false;
+            loadG = false;
+            newG = false;
             mouse = Mouse.GetState();
 
             base.Initialize();
@@ -74,7 +77,7 @@ namespace Evolution_Game
             int mouseX = mouse.X;
             int mouseY = mouse.Y;
 
-            if (mouse.LeftButton == ButtonState.Pressed)
+            if (mouse.LeftButton == ButtonState.Pressed && !noDraw)
             {
                 if (mouseX >= 625 && mouseX <= 625 + 200)
                 {
@@ -97,6 +100,7 @@ namespace Evolution_Game
         public void beginNewGame()
         {
             noDraw = true;
+            loadGame();
         }
 
         public void loadGame()

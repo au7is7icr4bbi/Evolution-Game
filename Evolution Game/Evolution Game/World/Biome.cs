@@ -55,8 +55,6 @@ namespace Evolution_Game
             width = bWidth;
             height = bHeight;
             position = bPosition;
-            
-            generateBiome(); // generates the biome based on data
         }
 
         public void setBlockTypes()
@@ -105,8 +103,8 @@ namespace Evolution_Game
         {
             setBlockTypes();
 
-            float endX = position.X + width / 2.0f;
-            float endY = position.Y + height / 2.0f;
+            float endX = position.X + (width / 2.0f);
+            float endY = position.Y + (height / 2.0f);
             int i = 0;
 
             for (float startX = position.X - width / 2.0f; startX < endX; startX += 15)
@@ -134,7 +132,7 @@ namespace Evolution_Game
             // write in each block
             for (int x = 0; x < blocks.Count; x++)
             {
-                if (x % width == 0)
+                if (x % (width / 15.0f) == 0)
                 {
                     sw.Write("\n");
                 }
@@ -149,9 +147,10 @@ namespace Evolution_Game
             int numBlWide = 0;
             int numBlHigh = 0;
             int y = 0;
-            char[] delim = new char[2];
+            char[] delim = new char[3];
             delim[0] = '|';
             delim[1] = ',';
+            delim[2] = '\n';
 
             StreamReader sr = new StreamReader("../../../../Evolution GameContent/world data/biome data/" + fileName);
             try
@@ -159,24 +158,31 @@ namespace Evolution_Game
                 String[] temp = sr.ReadLine().Split(delim);
                 numBlWide = Convert.ToInt32(temp[0]);
                 numBlHigh = Convert.ToInt32(temp[1]);
+
+
+                y = numBlHigh * 15;
+
+                for (String temp1; (temp1 = sr.ReadLine()) != null; )
+                {
+                    String[] items = temp1.Split(delim);
+
+                    for (int x = 0; x < items.Length; x++)
+                    {
+                        Block newBlock = new Block(game, items[x], new Vector2(x, y));
+                        newBlock.setCoords(x * 15, y); // dont know why, but without this blocks dont draw correctly, doing x * 15 on new vector above has no effect
+                        blocks.Add(newBlock);
+                    }
+                    y += 15;
+                }
             }
             catch (FormatException e)
             {
-                Console.WriteLine("Invalid File Format");
+                Console.WriteLine("Invalid biome File Format");
             }
 
-            for (String temp = null; (temp = sr.ReadLine()) != null; )
-            {
-                String[] items = temp.Split(delim);
-
-                for (int x = 0; x < items.Length; x++)
-                {
-                    Block newBlock = new Block(items[x], new Vector2(x * 15, y));
-                    blocks.Add(newBlock);
-                }
-                y += 15;
-            }
             sr.Close();
+
+            Console.WriteLine("Biome file read successfully");
         }
 
         // generates a random number
@@ -212,14 +218,30 @@ namespace Evolution_Game
             return 0;
         }
 
-        public String getName()
+        // calls the block draw method to render the blocks on screen
+        public void Draw(SpriteBatch spriteBatch, float cameraPosition)
         {
-            return name.ToString();
+            for (int i = 0; i < layers.Length; ++i)
+                layers[i].Draw(spriteBatch, cameraPosition);
+            
+            foreach (Block b in blocks)
+                b.Draw(spriteBatch);
         }
 
-        public String getType()
+        // get and set methods
+        public int getName()
         {
-            return type.ToString();
+            return (int)name;
+        }
+
+        public int getType()
+        {
+            return (int)type;
+        }
+
+        public Vector2 getSegment()
+        {
+            return segment;
         }
 
         public int getWidth()
@@ -236,14 +258,6 @@ namespace Evolution_Game
         {
             return position;
         }
-
-        // calls the block draw method to render the blocks on screen
-        public void Draw(SpriteBatch spriteBatch, float cameraPosition)
-        {
-            for (int i = 0; i < layers.Length; ++i)
-                layers[i].Draw(spriteBatch, cameraPosition);
-            foreach (Block b in blocks)
-                b.Draw(spriteBatch);
-        }
     }
+
 }

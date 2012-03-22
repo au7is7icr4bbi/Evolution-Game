@@ -48,6 +48,38 @@ namespace Evolution_Game
 
             initFileString();
         }
+        
+        // based on the string initialise block vars to appropriate values
+        public Block(Game g, String fStr, Vector2 pos)
+        {
+            game = g;
+            switch (fStr)
+            {
+                case "db":
+                    type = bType.DIRT;
+                    hitsToBreak = 6;
+                    tierLvl = 1;
+                    break;
+
+                case "ab":
+                    type = bType.AIR;
+                    hitsToBreak = 0;
+                    tierLvl = 0;
+                    break;
+
+                case "mb":
+                    type = bType.MUD;
+                    hitsToBreak = 10;
+                    tierLvl = 1;
+                    break;
+
+                case "wb":
+                    type = bType.WATER;
+                    hitsToBreak = 0;
+                    tierLvl = 0;
+                    break;
+            }
+        }
 
         // sets the variable for the 2 char string that will represent the block in biome file/s
         public void initFileString()
@@ -78,38 +110,7 @@ namespace Evolution_Game
                     tierLvl = 0;
                     break;
             }
-        }
-
-        // based on the string initialise block vars to appropriate values
-        public Block(String fStr, Vector2 pos)
-        {
-            switch (fStr)
-            {
-                case "db":
-                    type = bType.DIRT;
-                    hitsToBreak = 6;
-                    tierLvl = 1;
-                    break;
-
-                case "ab":
-                    type = bType.AIR;
-                    hitsToBreak = 0;
-                    tierLvl = 0;
-                    break;
-
-                case "mb":
-                    type = bType.MUD;
-                    hitsToBreak = 10;
-                    tierLvl = 1;
-                    break;
-
-                case "wb":
-                    type = bType.WATER;
-                    hitsToBreak = 0;
-                    tierLvl = 0;
-                    break;
-            }
-        }
+        }     
 
         public String getFileString()
         {
@@ -139,6 +140,12 @@ namespace Evolution_Game
             {
                 spriteBatch.Draw(texture, position, Color.White);
             }
-        } 
+
+        }
+
+        public void printPosition()
+        {
+            Console.WriteLine(position.X + "\t" + position.Y);
+        }
     }
 }

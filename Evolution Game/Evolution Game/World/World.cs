@@ -30,20 +30,46 @@ namespace Evolution_Game
             : base(game)
         {
             // TODO: Construct any child components here
+            player = new Player(Game);
         }
 
         // world height and width must be a multiple of 15 in order to work
-        public World(Game game, int wHeight, int wWidth, SpriteBatch batch, Player p)
+        public World(Game game, int wHeight, int wWidth, SpriteBatch batch, Player wPlayer)
             : base(game)
         {
             name = "World 1";
             height = wHeight;
             width = wWidth;
+            spriteBatch = batch;
+
+            biomes = new List<Biome>();
+            player = wPlayer;
+        }
+
+        // generates an entirely new world
+        public void generateNewWorld(Game game, int wWidth, int wHeight, SpriteBatch batch)
+        {
+
+            name = "World 1";
+            height = wHeight;
+            width = wWidth;
             biomes = new List<Biome>();
             spriteBatch = batch;
-            player = p;
 
+            // adds each biome to the world
             addBiomes();
+
+            // generate the blocks for each biome
+            foreach (Biome b in biomes)
+            {
+                b.generateBiome();
+            }
+
+            // write the biomes to file
+            worldFileWriter();
+
+            // clears the biomes stored in memory so that duplicates dont appear when the .wld file is loaded
+            biomes.Clear();
         }
 
         /// <summary>
@@ -61,33 +87,67 @@ namespace Evolution_Game
         // added biomes width and height MUST be a MULTIPLE of 15, otherwise there are calculation problems
         public void addBiomes()
         {
-            biomes.Add(new Biome(this.Game, Biome.nameId.NORMAL, Biome.typeId.ATMOS, new Vector2(1,1), 2700, 1500,
+            biomes.Add(new Biome(this.Game, Biome.nameId.NORMAL, Biome.typeId.ATMOS, new Vector2(1,1), 1500, 1500,
                 new Vector2(0, 0)));
-            biomes.Add(new Biome(this.Game, Biome.nameId.NORMAL, Biome.typeId.GROUND, new Vector2(1,2), 2700, 300,
-                new Vector2(1366 / 2.0f, 650)));
+            biomes.Add(new Biome(this.Game, Biome.nameId.NORMAL, Biome.typeId.GROUND, new Vector2(1,2), 60, 60,
+                new Vector2(1366 / 2.0f, 768/2.0f)));
         }
 
-        public void WorldFileWriter()
+        public void worldFileWriter()
         {
             StreamWriter sw = new StreamWriter("../../../../Evolution GameContent/world data/" + name + ".wld");
-
+            sw.WriteLine(width + "," + height);
             sw.WriteLine(biomes.Count);
 
             foreach (Biome b in biomes)
             {
-                sw.WriteLine(b.getName() + "," + b.getType() + ","
-                    + b.getWidth() + "," + b.getHeight() + "," + b.getPosition());
+                sw.WriteLine(b.getName() + "," + b.getType() + "," + b.getSegment().X + ","
+                    + b.getSegment().Y + "," + b.getWidth() + "," + b.getHeight() + "," 
+                    + b.getPosition().X + "," + b.getPosition().Y);
             }
-            
-
             sw.Close();
+
+            Console.WriteLine("World file written");
         }
 
+        // loads a .wld file which contains data on the worlds structure
         public void loadWorld()
         {
-            StreamReader sr = new StreamReader("../../../../Evolution GameContent/world data/" + name + ".wld");
+            int biomeCount = 0;
+            char[] delim = new char[1];
+            delim[0] = ',';
 
+            StreamReader sr = new StreamReader("../../../../Evolution GameContent/world data/" + name + ".wld");
+            string[] temp = sr.ReadLine().Split(delim);
+            
+            width = Convert.ToInt32(temp[0]);
+            height = Convert.ToInt32(temp[1]);
+
+            biomeCount = Convert.ToInt32(sr.ReadLine());
+
+            for (int i = 0; i < biomeCount; i++)
+            {
+                temp = sr.ReadLine().Split(delim);
+
+                biomes.Add(new Biome(Game, (Biome.nameId)Convert.ToInt32(temp[0]), (Biome.typeId)Convert.ToInt32(temp[1]), 
+                    new Vector2(Convert.ToInt32(temp[2]), Convert.ToInt32(temp[3])),
+                    Convert.ToInt32(temp[4]), Convert.ToInt32(temp[5]),
+                    new Vector2(Convert.ToInt32(temp[6]), Convert.ToInt32(temp[7]))));
+            }
             sr.Close();
+
+            // load in biome data
+            foreach (Biome b in biomes)
+            {
+                Biome.nameId tempN = (Biome.nameId)b.getName();
+                String n = tempN.ToString().ToLower();
+                
+                Biome.typeId tempT = (Biome.typeId)b.getType();
+                String t = tempT.ToString().ToLower();
+                
+                b.loadBiome(n + "_" + t + ".bio");
+            }
+            LoadContent();
         }
 
         protected override void LoadContent()
@@ -115,15 +175,14 @@ namespace Evolution_Game
         {
             ScrollCamera(spriteBatch.GraphicsDevice.Viewport);
             Matrix cameraTransform = Matrix.CreateTranslation(-cameraPosition, 0.0f, 0.0f);
-            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, null, null, cameraTransform);
             
+            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, null, null, cameraTransform);
             foreach (Biome b in biomes)
             {
                 b.Draw(spriteBatch, cameraPosition);
             }
             player.Draw(spriteBatch);
-            spriteBatch.End();
-            
+            spriteBatch.End();     
         }
         
         private void ScrollCamera(Viewport viewport) 

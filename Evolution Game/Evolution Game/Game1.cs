@@ -22,6 +22,7 @@ namespace Evolution_Game
         Player player;
         UserInterface ui;
         Menu mainMenu;
+        bool noDraw;
 
         public Game1()
         {
@@ -46,23 +47,24 @@ namespace Evolution_Game
             // Create a new SpriteBatch, which can be used to draw textures.
             
             spriteBatch = new SpriteBatch(GraphicsDevice);
+            noDraw = false;
             
             player = new Player(this, 100, 0, new Inventory(this),
                 new Vector2(graphics.PreferredBackBufferWidth / 2.0f, graphics.PreferredBackBufferHeight / 2.0f));
+
+            homeWorld = new World(this, 20000, 20000, spriteBatch, player);
+            homeWorld.DrawOrder = 0;
 
             ui = new UserInterface(this);
             ui.DrawOrder= 2;
 
             mainMenu = new Menu(this);
             mainMenu.DrawOrder = 1;
-            
-            homeWorld = new World(this, 40000, 40000, spriteBatch, player);
-            homeWorld.DrawOrder = 0;         
-            
+ 
             // add the various component classes to components
+            Components.Add(homeWorld);
             Components.Add(ui);
             Components.Add(mainMenu);
-            Components.Add(homeWorld);
 
             base.Initialize();
         }
@@ -95,9 +97,32 @@ namespace Evolution_Game
             // Allows the game to exit
             KeyboardState keys = Keyboard.GetState();
 
-
             if (keys.IsKeyDown(Keys.Escape))
                 this.Exit();
+
+            MouseState mouse = Mouse.GetState();
+            int mouseX = mouse.X;
+            int mouseY = mouse.Y;
+
+            if (mouse.LeftButton == ButtonState.Pressed && !noDraw)
+            {
+                if (mouseX >= 625 && mouseX <= 625 + 200)
+                {
+                    if (mouseY >= 350 && mouseY <= 350+50)
+                    {
+                        homeWorld.generateNewWorld(this, 20000, 20000, spriteBatch);
+                        homeWorld.loadWorld();
+                    }
+                    else if (mouseY >= 450 && mouseY <= 450 + 50)
+                    {
+                        homeWorld.loadWorld();
+                    }
+                    else if (mouseY >= 600 && mouseY <= 600 + 50)
+                    {
+                        this.Exit();
+                    }
+                }
+            }
 
             // TODO: Add your update logic here
             player.Update(gameTime);
@@ -114,7 +139,7 @@ namespace Evolution_Game
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             // TODO: Add your drawing code here
-
+           
             base.Draw(gameTime);
         }
     }
