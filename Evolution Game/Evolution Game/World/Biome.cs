@@ -92,6 +92,14 @@ namespace Evolution_Game
             }
         }
 
+        public void LoadContent()
+        {
+            foreach (Block b in blocks)
+            {
+                b.LoadContent();
+            }
+        }
+
         // generates a biome filled with the specified blocks
         public void generateBiome()
         {
@@ -118,11 +126,10 @@ namespace Evolution_Game
         // write the generated biome data to a text file
         public void biomeFileWriter()
         {
-
-            StreamWriter sw = new StreamWriter("../../../../Evolution GameContent/world data/biome data/" + 
+            StreamWriter sw = new StreamWriter("../../../../Evolution GameContent/world data/biome data/" +
                 name.ToString().ToLower() + "_" + type.ToString().ToLower() + ".bio");
-            
-            sw.WriteLine(blocks.Count); // write the current number of blocks in the biome
+
+            sw.WriteLine(width / 15.0f + "," + height / 15.0f); // write the current number of blocks in the biome
 
             // write in each block
             for (int x = 0; x < blocks.Count; x++)
@@ -139,40 +146,44 @@ namespace Evolution_Game
         // reads in biome data file
         public void loadBiome(String fileName)
         {
-            int numBlocks = 0;
+            int numBlWide = 0;
+            int numBlHigh = 0;
             int y = 0;
-            char[] delim = new char[1];
+            char[] delim = new char[2];
             delim[0] = '|';
-            StreamReader sr = new StreamReader("../../../../Evolution GameContent/world data/biome data/" + fileName);
+            delim[1] = ',';
 
+            StreamReader sr = new StreamReader("../../../../Evolution GameContent/world data/biome data/" + fileName);
             try
             {
-                numBlocks = Convert.ToInt32(sr.ReadLine());
+                String[] temp = sr.ReadLine().Split(delim);
+                numBlWide = Convert.ToInt32(temp[0]);
+                numBlHigh = Convert.ToInt32(temp[1]);
             }
             catch (FormatException e)
             {
                 Console.WriteLine("Invalid File Format");
             }
 
-            for (String temp = null; (temp = sr.ReadLine()) != null;)
+            for (String temp = null; (temp = sr.ReadLine()) != null; )
             {
                 String[] items = temp.Split(delim);
 
                 for (int x = 0; x < items.Length; x++)
                 {
-                    Block newBlock = new Block(items[x], new Vector2(x*15, y));
+                    Block newBlock = new Block(items[x], new Vector2(x * 15, y));
                     blocks.Add(newBlock);
                 }
-                y +=15;
+                y += 15;
             }
             sr.Close();
         }
 
         // generates a random number
         static int generateRandomNumber()
-        { 
-              int n = r.Next(100);
-              return n;
+        {
+            int n = r.Next(100);
+            return n;
         }
 
         // generates a random block from the blockTypes list
@@ -201,12 +212,29 @@ namespace Evolution_Game
             return 0;
         }
 
-        public void LoadContent()
+        public String getName()
         {
-            foreach (Block b in blocks)
-            {
-                b.LoadContent();
-            }
+            return name.ToString();
+        }
+
+        public String getType()
+        {
+            return type.ToString();
+        }
+
+        public int getWidth()
+        {
+            return width;
+        }
+
+        public int getHeight()
+        {
+            return height;
+        }
+
+        public Vector2 getPosition()
+        {
+            return position;
         }
 
         // calls the block draw method to render the blocks on screen

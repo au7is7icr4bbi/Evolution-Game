@@ -17,6 +17,7 @@ namespace Evolution_Game
     /// </summary>
     public class Menu : Microsoft.Xna.Framework.DrawableGameComponent
     {
+        private MouseState mouse;
         private SpriteBatch sprite;
         Texture2D menu_back;
         Texture2D new_game;
@@ -28,8 +29,7 @@ namespace Evolution_Game
             : base(game)
         {
             // TODO: Construct any child components here
-            sprite = new SpriteBatch(game.GraphicsDevice);
-            
+            sprite = new SpriteBatch(game.GraphicsDevice);          
         }
 
         /// <summary>
@@ -39,7 +39,9 @@ namespace Evolution_Game
         public override void Initialize()
         {
             // TODO: Add your initialization code here
+            
             noDraw = false;
+            mouse = Mouse.GetState();
 
             base.Initialize();
         }
@@ -61,10 +63,45 @@ namespace Evolution_Game
         public override void Update(GameTime gameTime)
         {
             // TODO: Add your update code here
-            if (Keyboard.GetState().IsKeyDown(Keys.S) && !noDraw)
-                noDraw = true;
+            updateMouse();
 
             base.Update(gameTime);
+        }
+
+        public void updateMouse()
+        {
+            mouse = Mouse.GetState();
+            int mouseX = mouse.X;
+            int mouseY = mouse.Y;
+
+            if (mouse.LeftButton == ButtonState.Pressed)
+            {
+                if (mouseX >= 625 && mouseX <= 625 + 200)
+                {
+                    if (mouseY >= 350 && mouseY <= 350+50)
+                    {
+                        beginNewGame();
+                    }
+                    else if (mouseY >= 450 && mouseY <= 450 + 50)
+                    {
+                        loadGame();
+                    }
+                    else if (mouseY >= 600 && mouseY <= 600 + 50)
+                    {
+                        Game.Exit();
+                    }
+                }
+            }
+        }
+
+        public void beginNewGame()
+        {
+            noDraw = true;
+        }
+
+        public void loadGame()
+        {
+            noDraw = true;
         }
 
         public override void Draw(GameTime gameTime)

@@ -34,3 +34,4 @@ C:\Users\Matt\Desktop\Evolution-Game\Evolution Game\Evolution Game\bin\x86\Debug
 C:\Users\Matt\Desktop\Evolution-Game\Evolution Game\Evolution Game\bin\x86\Debug\Content\menu tex\loadgame_tex.xnb
 C:\Users\Matt\Desktop\Evolution-Game\Evolution Game\Evolution Game\bin\x86\Debug\Content\menu tex\menu_background.xnb
 C:\Users\Matt\Desktop\Evolution-Game\Evolution Game\Evolution Game\bin\x86\Debug\Content\menu tex\newgame_tex.xnb
+C:\Users\Matt\Desktop\Evolution-Game\Evolution Game\Evolution Game\bin\x86\Debug\Content\UI tex\cursor.xnb

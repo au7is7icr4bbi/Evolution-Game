@@ -82,6 +82,15 @@
       <Output>C:\Users\Matt\Desktop\Evolution-Game\Evolution Game\Evolution Game\bin\x86\Debug\Content\menu tex\newgame_tex.xnb</Output>
       <Time>2012-03-21T22:18:38.34375+11:00</Time>
     </Item>
+    <Item>
+      <Source>UI tex\cursor.png</Source>
+      <Name>UI tex\cursor</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\Matt\Desktop\Evolution-Game\Evolution Game\Evolution Game\bin\x86\Debug\Content\UI tex\cursor.xnb</Output>
+      <Time>2012-03-22T13:00:18.399414+11:00</Time>
+    </Item>
     <BuildSuccessful>true</BuildSuccessful>
     <Settings>
       <TargetPlatform>Windows</TargetPlatform>

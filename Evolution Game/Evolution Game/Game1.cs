@@ -20,6 +20,7 @@ namespace Evolution_Game
         SpriteBatch spriteBatch;
         World homeWorld;
         Player player;
+        UserInterface ui;
         Menu mainMenu;
 
         public Game1()
@@ -43,14 +44,25 @@ namespace Evolution_Game
         {
             // TODO: Add your initialization logic here
             // Create a new SpriteBatch, which can be used to draw textures.
+            
             spriteBatch = new SpriteBatch(GraphicsDevice);
+            
             player = new Player(this, 100, 0, new Inventory(this),
                 new Vector2(graphics.PreferredBackBufferWidth / 2.0f, graphics.PreferredBackBufferHeight / 2.0f));
-            homeWorld = new World(this, 40000, 40000, spriteBatch, player);
-            homeWorld.DrawOrder = 0;
-            Components.Add(homeWorld);
+
+            ui = new UserInterface(this);
+            ui.DrawOrder= 2;
+
             mainMenu = new Menu(this);
+            mainMenu.DrawOrder = 1;
+            
+            homeWorld = new World(this, 40000, 40000, spriteBatch, player);
+            homeWorld.DrawOrder = 0;         
+            
+            // add the various component classes to components
+            Components.Add(ui);
             Components.Add(mainMenu);
+            Components.Add(homeWorld);
 
             base.Initialize();
         }
@@ -81,10 +93,10 @@ namespace Evolution_Game
         protected override void Update(GameTime gameTime)
         {
             // Allows the game to exit
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
-                this.Exit();
+            KeyboardState keys = Keyboard.GetState();
 
-            else if (Keyboard.GetState().IsKeyDown(Keys.Escape))
+
+            if (keys.IsKeyDown(Keys.Escape))
                 this.Exit();
 
             // TODO: Add your update logic here

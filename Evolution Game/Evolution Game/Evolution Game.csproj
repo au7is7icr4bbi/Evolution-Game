@@ -107,7 +107,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Characters\Spawn.cs" />
     <Compile Include="Menu.cs" />
+    <Compile Include="UserInterface.cs" />
     <Compile Include="World\Biome.cs" />
     <Compile Include="World\Block.cs" />
     <Compile Include="Characters\Character.cs" />

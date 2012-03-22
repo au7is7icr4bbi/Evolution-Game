@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.IO;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
@@ -17,9 +18,9 @@ namespace Evolution_Game
     /// </summary>
     public class World : Microsoft.Xna.Framework.DrawableGameComponent
     {
+        private String name;
         private int height;
         private int width;
-        private int numBlocks;
         private List<Biome> biomes;
         private float cameraPosition;
         private Player player;
@@ -31,14 +32,17 @@ namespace Evolution_Game
             // TODO: Construct any child components here
         }
 
+        // world height and width must be a multiple of 15 in order to work
         public World(Game game, int wHeight, int wWidth, SpriteBatch batch, Player p)
             : base(game)
         {
+            name = "World 1";
             height = wHeight;
             width = wWidth;
             biomes = new List<Biome>();
             spriteBatch = batch;
             player = p;
+
             addBiomes();
         }
 
@@ -54,13 +58,36 @@ namespace Evolution_Game
             base.Initialize();
         }
 
-        // added biomes MUST be a MULTIPLE of 15, otherwise there are calculation problems
+        // added biomes width and height MUST be a MULTIPLE of 15, otherwise there are calculation problems
         public void addBiomes()
         {
             biomes.Add(new Biome(this.Game, Biome.nameId.NORMAL, Biome.typeId.ATMOS, new Vector2(1,1), 2700, 1500,
                 new Vector2(0, 0)));
             biomes.Add(new Biome(this.Game, Biome.nameId.NORMAL, Biome.typeId.GROUND, new Vector2(1,2), 2700, 300,
                 new Vector2(1366 / 2.0f, 650)));
+        }
+
+        public void WorldFileWriter()
+        {
+            StreamWriter sw = new StreamWriter("../../../../Evolution GameContent/world data/" + name + ".wld");
+
+            sw.WriteLine(biomes.Count);
+
+            foreach (Biome b in biomes)
+            {
+                sw.WriteLine(b.getName() + "," + b.getType() + ","
+                    + b.getWidth() + "," + b.getHeight() + "," + b.getPosition());
+            }
+            
+
+            sw.Close();
+        }
+
+        public void loadWorld()
+        {
+            StreamReader sr = new StreamReader("../../../../Evolution GameContent/world data/" + name + ".wld");
+
+            sr.Close();
         }
 
         protected override void LoadContent()
