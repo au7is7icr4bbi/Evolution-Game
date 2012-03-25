@@ -37,8 +37,8 @@ namespace Evolution_Game
             graphics.PreferredBackBufferWidth = 1366;
             graphics.PreferredBackBufferHeight = 768;
 
-            //graphics.SynchronizeWithVerticalRetrace = false;
-            //IsFixedTimeStep = false;
+            graphics.SynchronizeWithVerticalRetrace = false;
+            IsFixedTimeStep = false;
 
             graphics.IsFullScreen = false;
 
