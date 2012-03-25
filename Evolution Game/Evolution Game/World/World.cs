@@ -9,6 +9,7 @@ using Microsoft.Xna.Framework.GamerServices;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
+using Evolution_Game.Characters;
 
 
 namespace Evolution_Game
@@ -22,6 +23,7 @@ namespace Evolution_Game
         private int height;
         private int width;
         private List<Biome> biomes;
+        private List<Spawn> playerSpawns;
         private float cameraPosition;
         private Player player;
         private SpriteBatch spriteBatch;
@@ -43,17 +45,18 @@ namespace Evolution_Game
             spriteBatch = batch;
 
             biomes = new List<Biome>();
+            playerSpawns = new List<Spawn>();
             player = wPlayer;
         }
 
         // generates an entirely new world
         public void generateNewWorld(Game game, int wWidth, int wHeight, SpriteBatch batch)
         {
-
             name = "World 1";
             height = wHeight;
             width = wWidth;
             biomes = new List<Biome>();
+            playerSpawns = new List<Spawn>();
             spriteBatch = batch;
 
             // adds each biome to the world
@@ -88,26 +91,27 @@ namespace Evolution_Game
         public void addBiomes()
         {
             biomes.Add(new Biome(this.Game, Biome.nameId.NORMAL, Biome.typeId.ATMOS, new Vector2(1,1), 1500, 1500,
-                new Vector2(0, 0)));
-            biomes.Add(new Biome(this.Game, Biome.nameId.NORMAL, Biome.typeId.GROUND, new Vector2(1,2), 60, 60,
-                new Vector2(1366 / 2.0f, 768/2.0f)));
+                new Vector2(0, 0), false));
+            biomes.Add(new Biome(this.Game, Biome.nameId.NORMAL, Biome.typeId.GROUND, new Vector2(1,2), 900, 300,
+                new Vector2(1366/2.0f, 768/2.0f), true));
         }
 
         public void worldFileWriter()
         {
             StreamWriter sw = new StreamWriter("../../../../Evolution GameContent/world data/" + name + ".wld");
+
             sw.WriteLine(width + "," + height);
             sw.WriteLine(biomes.Count);
 
             foreach (Biome b in biomes)
             {
                 sw.WriteLine(b.getName() + "," + b.getType() + "," + b.getSegment().X + ","
-                    + b.getSegment().Y + "," + b.getWidth() + "," + b.getHeight() + "," 
-                    + b.getPosition().X + "," + b.getPosition().Y);
+                    + b.getSegment().Y + "," + b.getWidth() + "," + b.getHeight() + ","
+                    + b.getPosition().X + "," + b.getPosition().Y + "," + b.spawnHere());                  
             }
             sw.Close();
 
-            Console.WriteLine("World file written");
+            Console.WriteLine("World file " + name + ".wld written successfully");
         }
 
         // loads a .wld file which contains data on the worlds structure
@@ -132,9 +136,18 @@ namespace Evolution_Game
                 biomes.Add(new Biome(Game, (Biome.nameId)Convert.ToInt32(temp[0]), (Biome.typeId)Convert.ToInt32(temp[1]), 
                     new Vector2(Convert.ToInt32(temp[2]), Convert.ToInt32(temp[3])),
                     Convert.ToInt32(temp[4]), Convert.ToInt32(temp[5]),
-                    new Vector2(Convert.ToInt32(temp[6]), Convert.ToInt32(temp[7]))));
+                    new Vector2(Convert.ToInt32(temp[6]), Convert.ToInt32(temp[7])), Convert.ToBoolean(temp[8])));
+
+                if (biomes[i].spawnHere())
+                {
+                    player = new Player(Game, 100, 100, new Inventory(Game), new Spawn(Game, biomes[i], new Vector2(400, 400), true));
+                }
+
+                //biomes[i].printBiome(); //debug code
             }
             sr.Close();
+
+            Console.WriteLine("World file " + name + ".wld read successfully");
 
             // load in biome data
             foreach (Biome b in biomes)

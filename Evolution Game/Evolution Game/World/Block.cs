@@ -16,7 +16,7 @@ namespace Evolution_Game
     /// </summary>
     public class Block
     {
-        public enum bType { AIR, WATER, DIRT, MUD, WOOD, STONE, COAL, CLAY, COPPER, TIN, IRON, SILVER, GOLD };
+        public enum bType { PLAYER, AIR, WATER, DIRT, MUD, WOOD, STONE, COAL, CLAY, COPPER, TIN, IRON, SILVER, GOLD };
         private bType type;
         private String fileStr;
         private Vector2 position;
@@ -78,6 +78,12 @@ namespace Evolution_Game
                     hitsToBreak = 0;
                     tierLvl = 0;
                     break;
+
+                case "pl":
+                    type = bType.PLAYER;
+                    hitsToBreak = 0;
+                    tierLvl = 0;
+                    break;
             }
         }
 
@@ -86,6 +92,12 @@ namespace Evolution_Game
         {
             switch (type)
             {
+                case bType.PLAYER:
+                    fileStr = "pl";
+                    hitsToBreak = 0;
+                    tierLvl = 0;
+                    break;
+
                 case bType.DIRT:
                     fileStr = "db";
                     hitsToBreak = 6;
@@ -119,7 +131,7 @@ namespace Evolution_Game
 
         public void LoadContent()
         {
-            if (type != bType.AIR)
+            if (type != bType.AIR && type != bType.PLAYER)
                 texture = game.Content.Load<Texture2D>("block tex/" + type.ToString().ToLower() + "_tex");
         }
 
@@ -143,6 +155,7 @@ namespace Evolution_Game
 
         }
 
+        // debug code
         public void printPosition()
         {
             Console.WriteLine(position.X + "\t" + position.Y);

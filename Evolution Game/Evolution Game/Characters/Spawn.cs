@@ -27,6 +27,14 @@ namespace Evolution_Game.Characters
             // TODO: Construct any child components here
         }
 
+        public Spawn(Game game, Biome biome, Vector2 pos, bool defSpawn)
+            :base(game)
+        {
+            spawnLocation = biome;
+            position = pos;
+            defaultSpawn = defSpawn;
+        }
+
         /// <summary>
         /// Allows the game component to perform any initialization it needs to before starting
         /// to run.  This is where it can query for any required services and load content.
@@ -47,6 +55,22 @@ namespace Evolution_Game.Characters
             // TODO: Add your update code here
 
             base.Update(gameTime);
+        }
+
+        // get set methods
+        public float getPosX()
+        {
+            return position.X;
+        }
+
+        public float getPosY()
+        {
+            return position.Y;
+        }
+
+        public Vector2 getPosition()
+        {
+            return position;
         }
     }
 }

@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework.GamerServices;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
+using Evolution_Game.Characters;
 
 
 namespace Evolution_Game
@@ -23,12 +24,27 @@ namespace Evolution_Game
             game = g;
         }
 
-        public Player(Game g, int pHealth, int pMana, Inventory pInventory, Vector2 pPosition)
+        public Player(Game g, int pHealth, int pMana, Inventory pInventory, Vector2 pos)
         {
             health = pHealth;
             mana = pMana;
             items = pInventory;
-            position = pPosition;
+            position = pos;
+            spawn = null;
+            box = new BoundingBox();
+            physics = new Physics();
+            moveSpeed = 80.0f;
+            jumpSpeed = 80.0f;
+            game = g;
+        }
+
+        public Player(Game g, int pHealth, int pMana, Inventory pInventory, Spawn pSpawn)
+        {
+            health = pHealth;
+            mana = pMana;
+            items = pInventory;
+            position = pSpawn.getPosition();
+            spawn = pSpawn;
             box = new BoundingBox();
             physics = new Physics();
             moveSpeed = 80.0f;
@@ -78,6 +94,17 @@ namespace Evolution_Game
         public override void Draw(SpriteBatch spriteBatch)
         {
             spriteBatch.Draw(texture, position, Color.White);
+        }
+
+        // get/set methods
+        public float getSpawnPosX()
+        {
+            return spawn.getPosX();
+        }
+
+        public float getSpawnPosY()
+        {
+            return spawn.getPosY();
         }
     }
 }

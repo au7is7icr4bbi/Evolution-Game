@@ -32,6 +32,7 @@ namespace Evolution_Game
         private Layer[] layers;
         static Random r = new Random();
         Game game;
+        bool plSpawn;
 
         public Biome(Game g)
         {
@@ -39,7 +40,7 @@ namespace Evolution_Game
             game = g;
         }
 
-        public Biome(Game g, nameId bName, typeId bType, Vector2 bSegment, int bWidth, int bHeight, Vector2 bPosition)
+        public Biome(Game g, nameId bName, typeId bType, Vector2 bSegment, int bWidth, int bHeight, Vector2 bPosition, bool plSpawnHere)
         {
             layers = new Layer[1];
             layers[0] = new Layer(g.Content, "biome tex/" + name + "_Layer0", 0.8f);
@@ -55,6 +56,7 @@ namespace Evolution_Game
             width = bWidth;
             height = bHeight;
             position = bPosition;
+            plSpawn = plSpawnHere;
         }
 
         public void setBlockTypes()
@@ -107,9 +109,9 @@ namespace Evolution_Game
             float endY = position.Y + (height / 2.0f);
             int i = 0;
 
-            for (float startX = position.X - width / 2.0f; startX < endX; startX += 15)
+            for (float startX = position.X - (width / 2.0f); startX < endX; startX += 15)
             {
-                for (float startY = position.Y - height / 2.0f; startY < endY; startY += 15)
+                for (float startY = position.Y - (height / 2.0f); startY < endY; startY += 15)
                 {
                     Block block = new Block(blocktypes.ElementAt(generateBlock()));
                     blocks.Add(block);
@@ -134,11 +136,13 @@ namespace Evolution_Game
             {
                 if (x % (width / 15.0f) == 0)
                 {
-                    sw.Write("\n");
+                    sw.WriteLine();
                 }
                 sw.Write(blocks[x].getFileString() + "|");
             }
             sw.Close();
+
+            Console.WriteLine("Biome file " + name.ToString().ToLower() + "_" + type.ToString().ToLower() + ".bio written successfully");
         }
 
         // reads in biome data file
@@ -146,7 +150,8 @@ namespace Evolution_Game
         {
             int numBlWide = 0;
             int numBlHigh = 0;
-            int y = 0;
+            float startX = position.X - (width / 2.0f);
+            float startY = position.Y - (height / 2.0f);
             char[] delim = new char[3];
             delim[0] = '|';
             delim[1] = ',';
@@ -159,21 +164,23 @@ namespace Evolution_Game
                 numBlWide = Convert.ToInt32(temp[0]);
                 numBlHigh = Convert.ToInt32(temp[1]);
 
-
-                y = numBlHigh * 15;
-
                 for (String temp1; (temp1 = sr.ReadLine()) != null; )
                 {
                     String[] items = temp1.Split(delim);
-
+                    startX = position.X - (width / 2.0f); 
+                    
                     for (int x = 0; x < items.Length; x++)
                     {
-                        Block newBlock = new Block(game, items[x], new Vector2(x, y));
-                        newBlock.setCoords(x * 15, y); // dont know why, but without this blocks dont draw correctly, doing x * 15 on new vector above has no effect
+                        Block newBlock = new Block(game, items[x], new Vector2(startX, startY));
+                        newBlock.setCoords(startX, startY); // dont know why, but without this blocks dont draw correctly, doing x * 15 on the new vector above has no effect
                         blocks.Add(newBlock);
+
+                        //Console.WriteLine(startX + "\t" + startY); // debug code
+                        startX += 15;
                     }
-                    y += 15;
+                    startY += 15;
                 }
+
             }
             catch (FormatException e)
             {
@@ -182,7 +189,7 @@ namespace Evolution_Game
 
             sr.Close();
 
-            Console.WriteLine("Biome file read successfully");
+            Console.WriteLine("Biome file " + name.ToString().ToLower() + "_" + type.ToString().ToLower() + ".bio read successfully");
         }
 
         // generates a random number
@@ -257,6 +264,17 @@ namespace Evolution_Game
         public Vector2 getPosition()
         {
             return position;
+        }
+
+        public bool spawnHere()
+        {
+            return plSpawn;
+        }
+
+        //debug code
+        public void printBiome()
+        {
+            Console.WriteLine(position.X + "\t" + position.Y + "\t" + spawnHere());
         }
     }
 

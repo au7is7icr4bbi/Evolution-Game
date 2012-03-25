@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework.GamerServices;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
+using Evolution_Game.Characters;
 
 namespace Evolution_Game
 {
@@ -30,7 +31,7 @@ namespace Evolution_Game
             graphics.PreferredBackBufferWidth = 1366;
             graphics.PreferredBackBufferHeight = 768;
 
-            //graphics.IsFullScreen = true;
+            graphics.IsFullScreen = false;
 
             Content.RootDirectory = "Content";
         }
@@ -48,9 +49,8 @@ namespace Evolution_Game
             
             spriteBatch = new SpriteBatch(GraphicsDevice);
             noDraw = false;
-            
-            player = new Player(this, 100, 0, new Inventory(this),
-                new Vector2(graphics.PreferredBackBufferWidth / 2.0f, graphics.PreferredBackBufferHeight / 2.0f));
+
+            player = new Player(this, 100, 0, new Inventory(this), new Vector2(400, 400));
 
             homeWorld = new World(this, 20000, 20000, spriteBatch, player);
             homeWorld.DrawOrder = 0;
@@ -110,11 +110,13 @@ namespace Evolution_Game
                 {
                     if (mouseY >= 350 && mouseY <= 350+50)
                     {
+                        noDraw = true;
                         homeWorld.generateNewWorld(this, 20000, 20000, spriteBatch);
                         homeWorld.loadWorld();
                     }
                     else if (mouseY >= 450 && mouseY <= 450 + 50)
                     {
+                        noDraw = true;
                         homeWorld.loadWorld();
                     }
                     else if (mouseY >= 600 && mouseY <= 600 + 50)

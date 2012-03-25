@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework.GamerServices;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
+using Evolution_Game.Characters;
 
 namespace Evolution_Game
 {
@@ -25,6 +26,7 @@ namespace Evolution_Game
         protected float moveSpeed;
         protected float jumpSpeed;
         protected Game game;
+        protected Spawn spawn;
 
         public Character()
         {
