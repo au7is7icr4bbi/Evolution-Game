@@ -25,11 +25,20 @@ namespace Evolution_Game
         Menu mainMenu;
         bool noDraw;
 
+        // performance code, used to determine frames per second and lag
+        private float fps;
+        private float updateInterval = 1.0f;
+        private float timeSinceLastUpdate = 0.0f;
+        private float framecount = 0;
+
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
             graphics.PreferredBackBufferWidth = 1366;
             graphics.PreferredBackBufferHeight = 768;
+
+            //graphics.SynchronizeWithVerticalRetrace = false;
+            //IsFixedTimeStep = false;
 
             graphics.IsFullScreen = false;
 
@@ -141,7 +150,23 @@ namespace Evolution_Game
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             // TODO: Add your drawing code here
-           
+
+            // code calculates the frames per second and writes it in the window title
+            float elapsed =
+            (float)gameTime.ElapsedGameTime.TotalSeconds;
+            framecount++;
+            timeSinceLastUpdate += elapsed;
+
+            if(timeSinceLastUpdate > updateInterval)
+            {
+                fps = framecount/timeSinceLastUpdate;
+                Window.Title = "FPS: " + fps.ToString() + "     RT: " +
+                gameTime.ElapsedGameTime.TotalSeconds.ToString() + "     GT: " +
+                gameTime.ElapsedGameTime.TotalSeconds.ToString();
+
+                framecount = 0;
+                timeSinceLastUpdate -= updateInterval;
+            }
             base.Draw(gameTime);
         }
     }

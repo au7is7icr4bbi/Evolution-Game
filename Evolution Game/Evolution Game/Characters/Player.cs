@@ -22,6 +22,8 @@ namespace Evolution_Game
         {
             // TODO: Construct any child components here
             game = g;
+            moveSpeed = 100.0f;
+            jumpSpeed = 200.0f;
         }
 
         public Player(Game g, int pHealth, int pMana, Inventory pInventory, Vector2 pos)
@@ -33,8 +35,8 @@ namespace Evolution_Game
             spawn = null;
             box = new BoundingBox();
             physics = new Physics();
-            moveSpeed = 80.0f;
-            jumpSpeed = 80.0f;
+            moveSpeed = 100.0f;
+            jumpSpeed = 200.0f;
             game = g;
         }
 
@@ -47,8 +49,8 @@ namespace Evolution_Game
             spawn = pSpawn;
             box = new BoundingBox();
             physics = new Physics();
-            moveSpeed = 80.0f;
-            jumpSpeed = 80.0f;
+            moveSpeed = 100.0f;
+            jumpSpeed = 200.0f;
             game = g;
         }
 

@@ -1,4 +1,4 @@
-using System;
+  using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.IO;
@@ -87,13 +87,13 @@ namespace Evolution_Game
             base.Initialize();
         }
 
-        // added biomes width and height MUST be a MULTIPLE of 15, otherwise there are calculation problems
+        // added biomes width and height MUST be a MULTIPLE of 30, otherwise there are calculation problems
         public void addBiomes()
         {
             biomes.Add(new Biome(this.Game, Biome.nameId.NORMAL, Biome.typeId.ATMOS, new Vector2(1,1), 1500, 1500,
                 new Vector2(0, 0), false));
             biomes.Add(new Biome(this.Game, Biome.nameId.NORMAL, Biome.typeId.GROUND, new Vector2(1,2), 900, 300,
-                new Vector2(1366/2.0f, 768/2.0f), true));
+                new Vector2(1366/2.0f, 610), true));
         }
 
         public void worldFileWriter()
@@ -140,7 +140,7 @@ namespace Evolution_Game
 
                 if (biomes[i].spawnHere())
                 {
-                    player = new Player(Game, 100, 100, new Inventory(Game), new Spawn(Game, biomes[i], new Vector2(400, 400), true));
+                    player = new Player(Game, 100, 100, new Inventory(Game), new Spawn(Game, biomes[i], new Vector2(1366/2.0f, 768/2.0f), true));
                 }
 
                 //biomes[i].printBiome(); //debug code

@@ -59,6 +59,8 @@ namespace Evolution_Game
             plSpawn = plSpawnHere;
         }
 
+
+        // detmines what blocks are initially in the different biomes, blocktypes should be added in the order from most common to least common
         public void setBlockTypes()
         {
             switch (name)
@@ -69,15 +71,15 @@ namespace Evolution_Game
                     {
                         // at ground level
                         case Biome.typeId.GROUND:
-                            blocktypes.Add(new Block(game, Block.bType.AIR, new Vector2()));
                             blocktypes.Add(new Block(game, Block.bType.DIRT, new Vector2()));
+                            blocktypes.Add(new Block(game, Block.bType.AIR, new Vector2()));
                             blocktypes.Add(new Block(game, Block.bType.WATER, new Vector2()));
                             blocktypes.Add(new Block(game, Block.bType.MUD, new Vector2()));
 
                             // set percentage liklihood of spawning blocks within the biome
                             // they are in the same order that the blocks above were added
-                            spawnPercent.Add(5);
                             spawnPercent.Add(80);
+                            spawnPercent.Add(5);
                             spawnPercent.Add(10);
                             spawnPercent.Add(5);
                         break;
@@ -113,12 +115,14 @@ namespace Evolution_Game
             {
                 for (float startY = position.Y - (height / 2.0f); startY < endY; startY += 15)
                 {
-                    Block block = new Block(blocktypes.ElementAt(generateBlock()));
+                    Block block = new Block(blocktypes.ElementAt(0));
                     blocks.Add(block);
                     blocks.ElementAt(i).setCoords(startX, startY);
                     i++;
                 }
             }
+
+            generateBlocks();
 
             biomeFileWriter();
         }
@@ -193,18 +197,47 @@ namespace Evolution_Game
         }
 
         // generates a random number
-        static int generateRandomNumber()
+        static int generateRandomNumber(int min, int max)
         {
-            int n = r.Next(100);
+            int n = r.Next(min, max);
             return n;
         }
 
         // generates a random block from the blockTypes list
-        public int generateBlock()
+        public int generateBlocks()
         {
-            int n = generateRandomNumber();
-            int currTotal = 0;
+             //= generateRandomNumber(1, 100);
+            //int currTotal = 0;
 
+            // positioning vars
+            int startX = (int)position.X - (width / 2);
+            int endX = (int)position.X + (width / 2);
+            int startY = (int)position.Y - (height / 2);
+            int endY = (int)position.Y + (height / 2);
+
+            int numBlocks = (width / 15) * (height / 15);
+            int n = generateRandomNumber(0, blocks.Count-1);
+            int groupWidth = 0;
+            int groupHeight = 0;
+
+
+            List<int> groupPos= new List<int>();
+            List<int> typeIndexes = new List<int>();
+
+            for (int i = 0; i < n; i++)
+            {
+                groupPos.Add(generateRandomNumber(0, numBlocks));
+                typeIndexes.Add(generateRandomNumber(0, blocktypes.Count));
+            }
+
+            for (int i = 0; i < groupPos.Count; i++)
+            {
+                int index = (width / 15) * (height / 15);
+                Vector2 pos = blocks[groupPos[i]].Position;
+                blocks[groupPos[i]] = new Block(game, blocktypes[typeIndexes[i]].Type, pos);
+            }
+
+            /*
             if (n < spawnPercent[0])
             {
                 n = 0;
@@ -221,6 +254,7 @@ namespace Evolution_Game
                     return n;
                 }
             }
+             */
 
             return 0;
         }

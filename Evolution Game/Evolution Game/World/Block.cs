@@ -25,6 +25,8 @@ namespace Evolution_Game
         private Texture2D texture;
         private BoundingBox box;
         private Game game;
+        public Vector2 Position { get { return position; } }
+        public Block.bType Type { get { return type; } }
 
         public Block(Game g)
         {
