@@ -17,7 +17,7 @@ namespace Evolution_Game
     /// </summary>
     public class Physics
     {
-        private const float gravity = -40.0f;
+        private const float gravity = -100.0f;
         private float nextVelocity;
         public float Velocity { get { return nextVelocity; } }
         public Physics()

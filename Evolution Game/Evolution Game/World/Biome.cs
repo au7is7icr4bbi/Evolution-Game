@@ -59,7 +59,6 @@ namespace Evolution_Game
             plSpawn = plSpawnHere;
         }
 
-
         // detmines what blocks are initially in the different biomes, blocktypes should be added in the order from most common to least common
         public void setBlockTypes()
         {
@@ -79,15 +78,14 @@ namespace Evolution_Game
                             // set percentage liklihood of spawning blocks within the biome
                             // they are in the same order that the blocks above were added
                             spawnPercent.Add(80);
-                            spawnPercent.Add(5);
                             spawnPercent.Add(10);
+                            spawnPercent.Add(5);
                             spawnPercent.Add(5);
                         break;
 
                         case Biome.typeId.ATMOS:
                             blocktypes.Add(new Block(game, Block.bType.AIR, new Vector2()));
                             spawnPercent.Add(100);
-
                         break;
                     }
                 break;
@@ -122,7 +120,7 @@ namespace Evolution_Game
                 }
             }
 
-            generateBlocks();
+            generateBlockClusters();
 
             biomeFileWriter();
         }
@@ -204,83 +202,105 @@ namespace Evolution_Game
         }
 
         // generates a random block from the blockTypes list
-        public int generateBlocks()
+        public void generateBlockClusters()
         {
             // positioning vars
             int startX = (int)position.X - (width / 2);
             int endX = (int)position.X + (width / 2);
             int startY = (int)position.Y - (height / 2);
             int endY = (int)position.Y + (height / 2);
+            float percent = spawnPercent[0] / 100.0f;
 
             int numBlocks = (width / 15) * (height / 15);
-            int n = generateRandomNumber(0, blocks.Count-1);
-            int groupWidth = 0;
-            int groupHeight = 0;
+            int n = generateRandomNumber(0, blocks.Count-1); // the number of positions picked for block clustering
+            
             List<int> groupPos= new List<int>();
             List<int> typeIndexes = new List<int>();
 
             for (int i = 0; i < n; i++)
             {
                 groupPos.Add(generateRandomNumber(0, numBlocks));
-                typeIndexes.Add(generateRandomNumber(0, blocktypes.Count));
-            }
+                
+                int a = generateRandomNumber(0, 100); // blocktypes.Count);
 
+                // check that there is more than one type of block in the biome
+                if (spawnPercent.Count > 1)
+                {
+                    // check percentages of each block and spawn them based on this
+                    for (int index = 1; index < spawnPercent.Count; index++)
+                    {
+                        // if index value between previous index value and a, then add to typeIndexes
+                        if (a > spawnPercent[index - 1] && spawnPercent[index] < a)
+                        {
+                            typeIndexes.Add(index);
+                        }
+                        else
+                        {
+                            typeIndexes.Add(0);
+                        }
+                    }
+                }
+                else
+                {
+                    typeIndexes.Add(generateRandomNumber(0, blocktypes.Count));
+                }
+            }
+            replaceBlocksWithClusters(groupPos, typeIndexes);
+        }
+
+        // replace the blocks with clusters
+        public void replaceBlocksWithClusters(List<int> groupPos, List<int>typeIndexes)
+        {
+            // replace existing blocks with the clusters
             for (int i = 0; i < groupPos.Count; i++)
             {
                 int index = (width / 15) * (height / 15);
                 Vector2 pos = blocks[groupPos[i]].Position;
 
-                groupWidth = generateRandomNumber(20, 30);
-                groupHeight = generateRandomNumber(20, 30);
+                int groupWidth = generateRandomNumber(10, 30);
+                int groupHeight = generateRandomNumber(10, 30);
 
-                // ignore the primary type as it has already been added
-                if (typeIndexes[i] != 0)
+                // draws a block at the picked position
+                blocks[groupPos[i]] = new Block(game, blocktypes[typeIndexes[i]].Type, pos);
+
+                // adds a random sized cluster of a blocktype to the  world along the x-axis
+                for (int j = 0; j < groupWidth; j++)
                 {
-                    // draws a block at the picked position
-                    blocks[groupPos[i]] = new Block(game, blocktypes[typeIndexes[i]].Type, pos);
-
-                    // adds a random sized cluster of a blocktype to the  world along the x-axis
-                    for (int j = 0; j < groupWidth; j++)
+                    // draws a block to the right of the picked position
+                    if (i + j < groupPos.Count && groupPos[i + j] < blocks.Count)
                     {
-                        // draws a block to the right of the picked position
-                        if (i + j < groupPos.Count && groupPos[i + j] < blocks.Count)
-                        {
-                            pos = blocks[groupPos[i + j]].Position;
-                            blocks[groupPos[i + j]] = new Block(game, blocktypes[typeIndexes[i]].Type, pos);
-                        }
-
-                        // draws a block to the left of the picked position
-                        if (i - j >= 0 && groupPos[i - j] >= 0)
-                        {
-                            pos = blocks[groupPos[i - j]].Position;
-                            blocks[groupPos[i - j]] = new Block(game, blocktypes[typeIndexes[i]].Type, pos);
-                        }
+                        pos = blocks[groupPos[i + j]].Position;
+                        blocks[groupPos[i + j]] = new Block(game, blocktypes[typeIndexes[i]].Type, pos);
                     }
 
-                    // adds a random sized cluster of a blocktype to the  world along the y-axis
-                    for (int j = 0; j < groupHeight; j++)
+                    // draws a block to the left of the picked position
+                    if (i - j >= 0 && groupPos[i - j] >= 0)
                     {
-                        blocks[groupPos[i]] = new Block(game, blocktypes[typeIndexes[i]].Type, pos);
-
-                        // draws a block to the above of the picked position
-                        if (i + width < groupPos.Count && groupPos[i + width] < blocks.Count)
-                        {
-                            pos = blocks[groupPos[i + width]].Position;
-                            blocks[groupPos[i + j]] = new Block(game, blocktypes[typeIndexes[i]].Type, pos);
-                        }
-
-                        // draws a block to the below of the picked position
-                        if (i - width >= 0 && groupPos[i - width] >= 0)
-                        {
-                            pos = blocks[groupPos[i - j]].Position;
-                            blocks[groupPos[i - j]] = new Block(game, blocktypes[typeIndexes[i]].Type, pos);
-                        }
+                        pos = blocks[groupPos[i - j]].Position;
+                        blocks[groupPos[i - j]] = new Block(game, blocktypes[typeIndexes[i]].Type, pos);
                     }
                 }
 
-            }
+                // adds a random sized cluster of a blocktype to the  world along the y-axis
+                for (int j = 0; j < groupHeight; j++)
+                {
+                    blocks[groupPos[i]] = new Block(game, blocktypes[typeIndexes[i]].Type, pos);
 
-            return 0;
+                    // draws a block above of the picked position
+                    if (i + width < groupPos.Count && groupPos[i + width] < blocks.Count)
+                    {
+                        pos = blocks[groupPos[i + width]].Position;
+                        blocks[groupPos[i + j]] = new Block(game, blocktypes[typeIndexes[i]].Type, pos);
+                    }
+
+                    // draws a block below of the picked position
+                    if (i - width >= 0 && groupPos[i - width] >= 0)
+                    {
+                        pos = blocks[groupPos[i - j]].Position;
+                        blocks[groupPos[i - j]] = new Block(game, blocktypes[typeIndexes[i]].Type, pos);
+                    }
+                }
+            }
         }
 
         // calls the block draw method to render the blocks on screen

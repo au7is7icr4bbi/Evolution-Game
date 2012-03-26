@@ -167,6 +167,7 @@ namespace Evolution_Game
                 framecount = 0;
                 timeSinceLastUpdate -= updateInterval;
             }
+
             base.Draw(gameTime);
         }
     }

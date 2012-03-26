@@ -23,7 +23,7 @@ namespace Evolution_Game
             // TODO: Construct any child components here
             game = g;
             moveSpeed = 100.0f;
-            jumpSpeed = 200.0f;
+            jumpSpeed = 50.0f;
         }
 
         public Player(Game g, int pHealth, int pMana, Inventory pInventory, Vector2 pos)
@@ -36,7 +36,7 @@ namespace Evolution_Game
             box = new BoundingBox();
             physics = new Physics();
             moveSpeed = 100.0f;
-            jumpSpeed = 200.0f;
+            jumpSpeed = 50.0f;
             game = g;
         }
 
@@ -50,7 +50,7 @@ namespace Evolution_Game
             box = new BoundingBox();
             physics = new Physics();
             moveSpeed = 100.0f;
-            jumpSpeed = 200.0f;
+            jumpSpeed = 50.0f;
             game = g;
         }
 
@@ -89,7 +89,7 @@ namespace Evolution_Game
 
             if (Keyboard.GetState().IsKeyUp(Keys.Space))
             {
-                jumpSpeed = 80.0f;
+                jumpSpeed = 100.0f;
             }
         }
 
