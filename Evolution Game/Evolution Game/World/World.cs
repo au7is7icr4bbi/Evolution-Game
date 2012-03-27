@@ -87,13 +87,85 @@ namespace Evolution_Game
             base.Initialize();
         }
 
-        // added biomes width and height MUST be a MULTIPLE of 30, otherwise there are calculation problems
+        protected override void LoadContent()
+        {
+            player.LoadContent();
+            foreach (Biome b in biomes)
+            {
+                b.LoadContent();
+            }
+        }
+
+        // added biomes width and height MUST be a MULTIPLE of 15 AND 4, otherwise there are calculation problems
+        // they should also be approximately (screenWidth / 4) pixels wide and (screenHeight / 4) pixels high
         public void addBiomes()
         {
-            biomes.Add(new Biome(this.Game, Biome.nameId.NORMAL, Biome.typeId.ATMOS, new Vector2(1,1), 1500, 1500,
-                new Vector2(0, 0), false));
-            biomes.Add(new Biome(this.Game, Biome.nameId.NORMAL, Biome.typeId.GROUND, new Vector2(1,2), 900, 300,
-                new Vector2(1366/2.0f, 610), true));
+            // Normal Atmosphere biomes
+            // where y = 2
+            biomes.Add(new Biome(this.Game, Biome.nameId.NORMAL, Biome.typeId.ATMOS, new Vector2(0, 2), 360, 300,
+                new Vector2(180, 5), false));
+
+            biomes.Add(new Biome(this.Game, Biome.nameId.NORMAL, Biome.typeId.ATMOS, new Vector2(1, 2), 360, 300,
+                new Vector2(540, 5), false));
+
+            biomes.Add(new Biome(this.Game, Biome.nameId.NORMAL, Biome.typeId.ATMOS, new Vector2(1, 2), 360, 300,
+                new Vector2(900, 5), false));
+
+            biomes.Add(new Biome(this.Game, Biome.nameId.NORMAL, Biome.typeId.ATMOS, new Vector2(1, 2), 360, 300,
+                new Vector2(1260, 5), false));
+
+            biomes.Add(new Biome(this.Game, Biome.nameId.NORMAL, Biome.typeId.ATMOS, new Vector2(1, 2), 360, 300,
+                new Vector2(1620, 5), false));
+
+            // where y = 1
+            biomes.Add(new Biome(this.Game, Biome.nameId.NORMAL, Biome.typeId.ATMOS, new Vector2(0,1), 360, 300,
+                new Vector2(180, 305), false));
+
+            biomes.Add(new Biome(this.Game, Biome.nameId.NORMAL, Biome.typeId.ATMOS, new Vector2(1, 1), 360, 300,
+                new Vector2(540, 305), false));
+
+            biomes.Add(new Biome(this.Game, Biome.nameId.NORMAL, Biome.typeId.ATMOS, new Vector2(1, 1), 360, 300,
+                new Vector2(900, 305), false));
+
+            biomes.Add(new Biome(this.Game, Biome.nameId.NORMAL, Biome.typeId.ATMOS, new Vector2(1, 1), 360, 300,
+                new Vector2(1260, 305), false));
+
+            biomes.Add(new Biome(this.Game, Biome.nameId.NORMAL, Biome.typeId.ATMOS, new Vector2(1, 1), 360, 300,
+                new Vector2(1620, 305), false));
+
+            // Normal Ground Biomes           
+            // where y = 0
+            biomes.Add(new Biome(this.Game, Biome.nameId.NORMAL, Biome.typeId.GROUND, new Vector2(0,0), 360, 300,
+                new Vector2(180, 605), true));
+
+            biomes.Add(new Biome(this.Game, Biome.nameId.NORMAL, Biome.typeId.GROUND, new Vector2(1,0), 360, 300,
+                new Vector2(540, 605), false));
+
+            biomes.Add(new Biome(this.Game, Biome.nameId.NORMAL, Biome.typeId.GROUND, new Vector2(2, 0), 360, 300,
+                new Vector2(900, 605), false));
+
+            biomes.Add(new Biome(this.Game, Biome.nameId.NORMAL, Biome.typeId.GROUND, new Vector2(3, 0), 360, 300,
+                            new Vector2(1260, 605), false));
+
+            biomes.Add(new Biome(this.Game, Biome.nameId.NORMAL, Biome.typeId.GROUND, new Vector2(4, 0), 360, 300,
+                            new Vector2(1620, 605), false));
+            
+            // where y = -1
+            biomes.Add(new Biome(this.Game, Biome.nameId.NORMAL, Biome.typeId.GROUND, new Vector2(0, -1), 360, 300,
+                new Vector2(180, 905), true));
+
+            biomes.Add(new Biome(this.Game, Biome.nameId.NORMAL, Biome.typeId.GROUND, new Vector2(1, -1), 360, 300,
+                new Vector2(540, 905), false));
+
+            biomes.Add(new Biome(this.Game, Biome.nameId.NORMAL, Biome.typeId.GROUND, new Vector2(2, -1), 360, 300,
+                new Vector2(900, 905), false));
+
+            biomes.Add(new Biome(this.Game, Biome.nameId.NORMAL, Biome.typeId.GROUND, new Vector2(3, -1), 360, 300,
+                            new Vector2(1260, 905), false));
+
+            biomes.Add(new Biome(this.Game, Biome.nameId.NORMAL, Biome.typeId.GROUND, new Vector2(4, -1), 360, 300,
+                            new Vector2(1620, 905), false));
+
         }
 
         public void worldFileWriter()
@@ -158,47 +230,12 @@ namespace Evolution_Game
                 Biome.typeId tempT = (Biome.typeId)b.getType();
                 String t = tempT.ToString().ToLower();
                 
-                b.loadBiome(n + "_" + t + ".bio");
+                b.loadBiome(n + "_" + t);
             }
             LoadContent();
         }
 
-        protected override void LoadContent()
-        {
-            player.LoadContent();
-            foreach (Biome b in biomes)
-            {
-                b.LoadContent();
-            }
-        }
-
-        /// <summary>
-        /// Allows the game component to update itself.
-        /// </summary>
-        /// <param name="gameTime">Provides a snapshot of timing values.</param>
-        public override void Update(GameTime gameTime)
-        {
-            // TODO: Add your update code here
-            player.Update(gameTime);
-
-            base.Update(gameTime);
-        }
-
-        public override void Draw(GameTime gameTime)
-        {
-            ScrollCamera(spriteBatch.GraphicsDevice.Viewport);
-            Matrix cameraTransform = Matrix.CreateTranslation(-cameraPosition, 0.0f, 0.0f);
-            
-            spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, null, null, cameraTransform);
-            foreach (Biome b in biomes)
-            {
-                b.Draw(spriteBatch, cameraPosition);
-            }
-            player.Draw(spriteBatch);
-            spriteBatch.End();     
-        }
-        
-        private void ScrollCamera(Viewport viewport) 
+        private void ScrollCamera(Viewport viewport)
         {
             const float ViewMargin = 0.5f;
 
@@ -217,6 +254,32 @@ namespace Evolution_Game
             // Update the camera position, but prevent scrolling off the ends of the level.
             float maxCameraPosition = 15 * width - viewport.Width;
             cameraPosition = MathHelper.Clamp(cameraPosition + cameraMovement, 0.0f, maxCameraPosition);
+        }  
+
+        /// <summary>
+        /// Allows the game component to update itself.
+        /// </summary>
+        /// <param name="gameTime">Provides a snapshot of timing values.</param>
+        public override void Update(GameTime gameTime)
+        {
+            // TODO: Add your update code here
+            player.Update(gameTime);
+
+            base.Update(gameTime);
+        }
+
+        public override void Draw(GameTime gameTime)
+        {
+            ScrollCamera(spriteBatch.GraphicsDevice.Viewport);
+            Matrix cameraTransform = Matrix.CreateTranslation(-cameraPosition, 0.0f, 0.0f);
+            
+            spriteBatch.Begin(SpriteSortMode.Texture, BlendState.AlphaBlend, null, null, null, null, cameraTransform);
+            foreach (Biome b in biomes)
+            {
+                b.Draw(spriteBatch, cameraPosition);
+            }
+            player.Draw(spriteBatch);
+            spriteBatch.End();     
         }
     }
 }

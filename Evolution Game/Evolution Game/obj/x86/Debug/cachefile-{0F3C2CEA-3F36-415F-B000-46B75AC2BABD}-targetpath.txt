@@ -8,3 +8,4 @@ Content\menu tex\loadgame_tex.xnb
 Content\menu tex\menu_background.xnb
 Content\menu tex\newgame_tex.xnb
 Content\UI tex\cursor.xnb
+Content\misc\divider.xnb

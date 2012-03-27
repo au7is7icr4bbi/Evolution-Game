@@ -12,10 +12,12 @@ namespace Evolution_Game
     {
         private Texture2D texture;
         private float scrollRate;
-        public Layer(ContentManager Content, String file, float scrollSpeed)
+        public Biome owner;
+        public Layer(ContentManager Content, String file, float scrollSpeed, Biome o)
         {
             // Assumes each layer only has 3 segments.
             texture = Content.Load<Texture2D>(file);
+            owner = o;
 
             scrollRate = scrollSpeed;
         }
@@ -28,9 +30,9 @@ namespace Evolution_Game
             // Calculate which segments to draw and how much to offset them.
             float x = cameraPosition * scrollRate;
             int leftSegment = (int)Math.Floor(x / segmentWidth);
-            int rightSegment = leftSegment + 1;
             x = (x / segmentWidth - leftSegment) * -segmentWidth;
-            spriteBatch.Draw(texture, new Vector2(x, 0.0f), null, Color.White, 0.0f, new Vector2(x, 0.0f), 2.0f, SpriteEffects.None, 1.0f);
+            spriteBatch.Draw(texture, new Vector2(owner.getPosition().X - (owner.getWidth() / 2.0f), 0), 
+                null, Color.White, 0.0f, new Vector2(0, 0.0f), 2.0f, SpriteEffects.None, 1.0f);
         }
     }
 }

@@ -109,12 +109,12 @@
   <ItemGroup>
     <Compile Include="Characters\Spawn.cs" />
     <Compile Include="Menu.cs" />
-    <Compile Include="UserInterface.cs" />
+    <Compile Include="User Interface\UserInterface.cs" />
     <Compile Include="World\Biome.cs" />
     <Compile Include="World\Block.cs" />
     <Compile Include="Characters\Character.cs" />
     <Compile Include="Physics.cs" />
-    <Compile Include="Inventory.cs" />
+    <Compile Include="User Interface\Inventory.cs" />
     <Compile Include="Characters\Player.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />

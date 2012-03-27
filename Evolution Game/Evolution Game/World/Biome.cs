@@ -34,6 +34,9 @@ namespace Evolution_Game
         Game game;
         bool plSpawn;
 
+        // debug variable used to show segments
+        Texture2D dividerX, dividerY;
+
         public Biome(Game g)
         {
             // TODO: Construct any child components here
@@ -42,8 +45,13 @@ namespace Evolution_Game
 
         public Biome(Game g, nameId bName, typeId bType, Vector2 bSegment, int bWidth, int bHeight, Vector2 bPosition, bool plSpawnHere)
         {
+            // debug graphics
+            dividerX = g.Content.Load<Texture2D>("misc/divider");
+            dividerY = g.Content.Load<Texture2D>("misc/divider");
+
             layers = new Layer[1];
-            layers[0] = new Layer(g.Content, "biome tex/" + name + "_Layer0", 0.8f);
+            layers[0] = new Layer(g.Content, "biome tex/" + name + "_Layer0", 0.8f, this);
+
             //layers[1] = new Layer(g.Content, "biome tex/" + name + "Layer1", 0.5f);
             //layers[2] = new Layer(g.Content, "biome tex/" + name + "Layer2", 0.8f);
             game = g;
@@ -59,7 +67,7 @@ namespace Evolution_Game
             plSpawn = plSpawnHere;
         }
 
-        // detmines what blocks are initially in the different biomes, blocktypes should be added in the order from most common to least common
+        // determines what blocks are initially in the different biomes, blocktypes should be added in the order from most common to least common
         public void setBlockTypes()
         {
             switch (name)
@@ -77,6 +85,7 @@ namespace Evolution_Game
 
                             // set percentage liklihood of spawning blocks within the biome
                             // they are in the same order that the blocks above were added
+                            //spawnPercent.Add(100);
                             spawnPercent.Add(80);
                             spawnPercent.Add(10);
                             spawnPercent.Add(5);
@@ -121,7 +130,6 @@ namespace Evolution_Game
             }
 
             generateBlockClusters();
-
             biomeFileWriter();
         }
 
@@ -129,7 +137,7 @@ namespace Evolution_Game
         public void biomeFileWriter()
         {
             StreamWriter sw = new StreamWriter("../../../../Evolution GameContent/world data/biome data/" +
-                name.ToString().ToLower() + "_" + type.ToString().ToLower() + ".bio");
+                name.ToString().ToLower() + "_" + type.ToString().ToLower() + segment.X + segment.Y + ".bio");
 
             sw.WriteLine(width / 15.0f + "," + height / 15.0f); // write the current number of blocks in the biome
 
@@ -144,7 +152,7 @@ namespace Evolution_Game
             }
             sw.Close();
 
-            Console.WriteLine("Biome file " + name.ToString().ToLower() + "_" + type.ToString().ToLower() + ".bio written successfully");
+            Console.WriteLine("Biome file " + name.ToString().ToLower() + "_" + type.ToString().ToLower() + segment.X + segment.Y + ".bio written successfully");
         }
 
         // reads in biome data file
@@ -153,13 +161,13 @@ namespace Evolution_Game
             int numBlWide = 0;
             int numBlHigh = 0;
             float startX = position.X - (width / 2.0f);
-            float startY = position.Y - (height / 2.0f);
+            float startY = (position.Y - (height / 2.0f)) - 15; //subtracted 15 to get it to center itself correctly, value is out for some reason
             char[] delim = new char[3];
             delim[0] = '|';
             delim[1] = ',';
             delim[2] = '\n';
 
-            StreamReader sr = new StreamReader("../../../../Evolution GameContent/world data/biome data/" + fileName);
+            StreamReader sr = new StreamReader("../../../../Evolution GameContent/world data/biome data/" + fileName + segment.X + segment.Y + ".bio");
             try
             {
                 String[] temp = sr.ReadLine().Split(delim);
@@ -174,7 +182,7 @@ namespace Evolution_Game
                     for (int x = 0; x < items.Length; x++)
                     {
                         Block newBlock = new Block(game, items[x], new Vector2(startX, startY));
-                        newBlock.setCoords(startX, startY); // dont know why, but without this blocks dont draw correctly, doing x * 15 on the new vector above has no effect
+                        newBlock.setCoords(startX, startY); // dont know why, but without this blocks dont draw correctly, doing x * 15 on the new vector above has no effect also 
                         blocks.Add(newBlock);
 
                         //Console.WriteLine(startX + "\t" + startY); // debug code
@@ -182,7 +190,6 @@ namespace Evolution_Game
                     }
                     startY += 15;
                 }
-
             }
             catch (FormatException e)
             {
@@ -191,7 +198,7 @@ namespace Evolution_Game
 
             sr.Close();
 
-            Console.WriteLine("Biome file " + name.ToString().ToLower() + "_" + type.ToString().ToLower() + ".bio read successfully");
+            Console.WriteLine("Biome file " + name.ToString().ToLower() + "_" + type.ToString().ToLower() + segment.X + segment.Y + ".bio read successfully");
         }
 
         // generates a random number
@@ -257,8 +264,8 @@ namespace Evolution_Game
                 int index = (width / 15) * (height / 15);
                 Vector2 pos = blocks[groupPos[i]].Position;
 
-                int groupWidth = generateRandomNumber(10, 30);
-                int groupHeight = generateRandomNumber(10, 30);
+                int groupWidth = generateRandomNumber(3, 30);
+                int groupHeight = generateRandomNumber(3, 30);
 
                 // draws a block at the picked position
                 blocks[groupPos[i]] = new Block(game, blocktypes[typeIndexes[i]].Type, pos);
@@ -306,11 +313,14 @@ namespace Evolution_Game
         // calls the block draw method to render the blocks on screen
         public void Draw(SpriteBatch spriteBatch, float cameraPosition)
         {
-            for (int i = 0; i < layers.Length; ++i)
-                layers[i].Draw(spriteBatch, cameraPosition);
-            
+            //for (int i = 0; i < layers.Length; ++i)
+                //layers[i].Draw(spriteBatch, cameraPosition);
+  
             foreach (Block b in blocks)
                 b.Draw(spriteBatch);
+
+            spriteBatch.Draw(dividerX, new Rectangle((int)(position.X + (width / 2)), (int)(position.Y - (height / 2)), 6, height), Color.White);
+            spriteBatch.Draw(dividerY, new Rectangle((int)(position.X - (width / 2)), (int)(position.Y + (height / 2)), width, 6), Color.White);
         }
 
         // get and set methods
@@ -352,7 +362,7 @@ namespace Evolution_Game
         //debug code
         public void printBiome()
         {
-            Console.WriteLine(position.X + "\t" + position.Y + "\t" + spawnHere());
+            Console.WriteLine(position.X + "\t" + position.Y + "\t" + width + "\t" + height);
         }
     }
 
