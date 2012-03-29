@@ -221,8 +221,8 @@ namespace Evolution_Game
             int numBlocks = (width / 15) * (height / 15);
             int n = generateRandomNumber(0, blocks.Count-1); // the number of positions picked for block clustering
             
-            List<int> groupPos= new List<int>();
-            List<int> typeIndexes = new List<int>();
+            List<int> groupPos= new List<int>(); // list holds each of the randomly picked positions that clusters will be placed at
+            List<int> typeIndexes = new List<int>(); // lists the type of each cluster
 
             for (int i = 0; i < n; i++)
             {
@@ -269,23 +269,24 @@ namespace Evolution_Game
                 // draws a block at the picked position
                 blocks[groupPos[i]] = new Block(game, blocktypes[typeIndexes[i]].Type, pos);
 
+                // water will have a different cluster pattern so dont add it here
                 if (((Block.bType)typeIndexes[i]) != Block.bType.WATER)
                 {
                     // adds a random sized cluster of a blocktype to the world along the x-axis
                     for (int j = 0; j < groupWidth; j++)
                     {
                         // draws a block to the right of the picked position
-                        if (i + j < groupPos.Count && groupPos[i + j] < blocks.Count)
+                        if (groupPos[i] + j < blocks.Count)
                         {
-                            pos = blocks[groupPos[i + j]].Position;
-                            blocks[groupPos[i + j]] = new Block(game, blocktypes[typeIndexes[i]].Type, pos);
+                            pos = blocks[groupPos[i] + j].Position;
+                            blocks[groupPos[i] + j] = new Block(game, blocktypes[typeIndexes[i]].Type, pos);
                         }
 
                         // draws a block to the left of the picked position
-                        if (i - j >= 0 && groupPos[i - j] >= 0)
+                        if (groupPos[i] - j >= 0)
                         {
-                            pos = blocks[groupPos[i - j]].Position;
-                            blocks[groupPos[i - j]] = new Block(game, blocktypes[typeIndexes[i]].Type, pos);
+                            pos = blocks[groupPos[i] - j].Position;
+                            blocks[groupPos[i] - j] = new Block(game, blocktypes[typeIndexes[i]].Type, pos);
                         }
                     }
 
@@ -295,21 +296,21 @@ namespace Evolution_Game
                         blocks[groupPos[i]] = new Block(game, blocktypes[typeIndexes[i]].Type, pos);
 
                         // draws a block above of the picked position
-                        if (i + (width/15) < groupPos.Count && groupPos[i + (width/15)] < blocks.Count) // i + width = the row above the current block
+                        if (groupPos[i] + k*(width/15) < blocks.Count) // i + width = the row above the current block
                         {
-                            pos = blocks[groupPos[i + (width/15)]].Position;
-                            blocks[groupPos[i + (width/15)]] = new Block(game, blocktypes[typeIndexes[i]].Type, pos);
+                            pos = blocks[groupPos[i] + k*(width/15)].Position;
+                            blocks[groupPos[i] + k*(width/15)] = new Block(game, blocktypes[typeIndexes[i]].Type, pos);
                         }
 
                         // draws a block below of the picked position
-                        if (i - (width/15) >= 0 && groupPos[i - (width/15)] >= 0) // i - width = the row  the current block
+                        if (groupPos[i] - k*(width/15) >= 0) // i - width = the row  the current block
                         {
-                            pos = blocks[groupPos[i - (width/15)]].Position;
-                            blocks[groupPos[i - (width/15)]] = new Block(game, blocktypes[typeIndexes[i]].Type, pos);
+                            pos = blocks[groupPos[i] - k*(width/15)].Position;
+                            blocks[groupPos[i] - k*(width/15)] = new Block(game, blocktypes[typeIndexes[i]].Type, pos);
                         }
                     }
-
-                    /* 
+ 
+                    /*
                     pos = blocks[groupPos[i]].Position;
                     float endY = pos.Y - (height/2);
                     int newWidth = width/15;
@@ -317,11 +318,11 @@ namespace Evolution_Game
                     for (float startY = pos.Y; startY > endY; startY+=15)
                     {
                         for (int x = 0; x < newWidth; x++)
-                        {
-                            new Block
+                        {                           
                         }
                         newWidth -= 2;
-                    } */  
+                    }
+                     */
                 }
             }
         }
