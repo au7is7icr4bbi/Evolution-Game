@@ -234,10 +234,11 @@ namespace Evolution_Game
                 if (spawnPercent.Count > 1)
                 {
                     // check percentages of each block and spawn them based on this
+                    int totalPercent = 0;
                     for (int index = 1; index < spawnPercent.Count; index++)
                     {
                         // if index value between previous index value and a, then add to typeIndexes
-                        if (a > spawnPercent[index - 1] && spawnPercent[index] < a)
+                        if (a > spawnPercent[index - 1] && totalPercent + spawnPercent[index-1] < a)
                         {
                             typeIndexes.Add(index);
                         }
@@ -245,6 +246,7 @@ namespace Evolution_Game
                         {
                             typeIndexes.Add(0);
                         }
+                        totalPercent += spawnPercent[index - 1];
                     }
                 }
                 else
@@ -266,63 +268,109 @@ namespace Evolution_Game
                 int groupWidth = generateRandomNumber(3, 19);
                 int groupHeight = generateRandomNumber(3, 19);
 
-                // draws a block at the picked position
-                blocks[groupPos[i]] = new Block(game, blocktypes[typeIndexes[i]].Type, pos);
+                if (groupWidth % 2 == 0)
+                {
+                    groupWidth += 1;
+                }
+
+                if (groupHeight % 2 == 0)
+                {
+                    groupHeight += 1;
+                }
 
                 // water will have a different cluster pattern so dont add it here
                 if (((Block.bType)typeIndexes[i]) != Block.bType.WATER)
                 {
-                    // adds a random sized cluster of a blocktype to the world along the x-axis
-                    for (int j = 0; j < groupWidth; j++)
-                    {
-                        // draws a block to the right of the picked position
-                        if (groupPos[i] + j < blocks.Count)
-                        {
-                            pos = blocks[groupPos[i] + j].Position;
-                            blocks[groupPos[i] + j] = new Block(game, blocktypes[typeIndexes[i]].Type, pos);
-                        }
+                    // draws a block at the picked position
+                    blocks[groupPos[i]] = new Block(game, blocktypes[typeIndexes[i]].Type, pos);
 
-                        // draws a block to the left of the picked position
-                        if (groupPos[i] - j >= 0)
-                        {
-                            pos = blocks[groupPos[i] - j].Position;
-                            blocks[groupPos[i] - j] = new Block(game, blocktypes[typeIndexes[i]].Type, pos);
-                        }
-                    }
-
-                    // adds a random sized cluster of a blocktype to the world along the y-axis
                     for (int k = 0; k < groupHeight; k++)
                     {
                         blocks[groupPos[i]] = new Block(game, blocktypes[typeIndexes[i]].Type, pos);
 
-                        // draws a block above of the picked position
-                        if (groupPos[i] + k*(width/15) < blocks.Count) // i + width = the row above the current block
+                        // draws a block below of the picked position
+                        if (groupPos[i] + k * (width / 15) < blocks.Count) // i + width = the row above the current block
                         {
-                            pos = blocks[groupPos[i] + k*(width/15)].Position;
-                            blocks[groupPos[i] + k*(width/15)] = new Block(game, blocktypes[typeIndexes[i]].Type, pos);
+                            pos = blocks[groupPos[i] + k * (width / 15)].Position;
+                            blocks[groupPos[i] + k * (width / 15)] = new Block(game, blocktypes[typeIndexes[i]].Type, pos);
+
+                            for (int j = 0; j < groupWidth; j++)
+                            {
+                                // draws a block to the right of the picked position
+                                if (groupPos[i] + j + k * (width / 15) < blocks.Count)
+                                {
+                                    pos = blocks[groupPos[i] + j + k * (width / 15)].Position;
+                                    blocks[groupPos[i] + j + k * (width / 15)] = new Block(game, blocktypes[typeIndexes[i]].Type, pos);
+                                }
+
+                                // draws a block to the left of the picked position
+                                if (groupPos[i] - j + k * (width / 15) >= 0)
+                                {
+                                    pos = blocks[groupPos[i] - j + k * (width / 15)].Position;
+                                    blocks[groupPos[i] - j + k * (width / 15)] = new Block(game, blocktypes[typeIndexes[i]].Type, pos);
+                                }
+                            }
+                            groupWidth -= 2;
                         }
 
-                        // draws a block below of the picked position
-                        if (groupPos[i] - k*(width/15) >= 0) // i - width = the row  the current block
+                        // draws a block above of the picked position
+                        if (groupPos[i] - k * (width / 15) >= 0) // i - width = the row above the current block
                         {
-                            pos = blocks[groupPos[i] - k*(width/15)].Position;
-                            blocks[groupPos[i] - k*(width/15)] = new Block(game, blocktypes[typeIndexes[i]].Type, pos);
+                            pos = blocks[groupPos[i] - k * (width / 15)].Position;
+                            blocks[groupPos[i] - k * (width / 15)] = new Block(game, blocktypes[typeIndexes[i]].Type, pos);
+
+                            for (int j = 0; j < groupWidth; j++)
+                            {
+                                // draws a block to the right of the picked position
+                                if (groupPos[i] + j - k * (width / 15) < blocks.Count)
+                                {
+                                    pos = blocks[groupPos[i] + j - k * (width / 15)].Position;
+                                    blocks[groupPos[i] + j - k * (width / 15)] = new Block(game, blocktypes[typeIndexes[i]].Type, pos);
+                                }
+
+                                // draws a block to the left of the picked position
+                                if (groupPos[i] - j - k * (width / 15) >= 0)
+                                {
+                                    pos = blocks[groupPos[i] - j - k * (width / 15)].Position;
+                                    blocks[groupPos[i] - j - k * (width / 15)] = new Block(game, blocktypes[typeIndexes[i]].Type, pos);
+                                }
+                            }
+                            groupWidth -= 2;
                         }
                     }
- 
-                    /*
-                    pos = blocks[groupPos[i]].Position;
-                    float endY = pos.Y - (height/2);
-                    int newWidth = width/15;
-                    
-                    for (float startY = pos.Y; startY > endY; startY+=15)
+                }
+                
+                else
+                {
+                    for (int k = 0; k < groupHeight; k++)
                     {
-                        for (int x = 0; x < newWidth; x++)
-                        {                           
+                        blocks[groupPos[i]] = new Block(game, blocktypes[typeIndexes[i]].Type, pos);
+
+                        // draws a block below of the picked position
+                        if (groupPos[i] + k * (width / 15) < blocks.Count) // i + width = the row above the current block
+                        {
+                            pos = blocks[groupPos[i] + k * (width / 15)].Position;
+                            blocks[groupPos[i] + k * (width / 15)] = new Block(game, blocktypes[typeIndexes[i]].Type, pos);
+
+                            for (int j = 0; j < groupWidth; j++)
+                            {
+                                // draws a block to the right of the picked position
+                                if (groupPos[i] + j + k * (width / 15) < blocks.Count)
+                                {
+                                    pos = blocks[groupPos[i] + j + k * (width / 15)].Position;
+                                    blocks[groupPos[i] + j + k * (width / 15)] = new Block(game, blocktypes[typeIndexes[i]].Type, pos);
+                                }
+
+                                // draws a block to the left of the picked position
+                                if (groupPos[i] - j + k * (width / 15) >= 0)
+                                {
+                                    pos = blocks[groupPos[i] - j + k * (width / 15)].Position;
+                                    blocks[groupPos[i] - j + k * (width / 15)] = new Block(game, blocktypes[typeIndexes[i]].Type, pos);
+                                }
+                            }
+                            groupWidth -= 2;
                         }
-                        newWidth -= 2;
                     }
-                     */
                 }
             }
         }
