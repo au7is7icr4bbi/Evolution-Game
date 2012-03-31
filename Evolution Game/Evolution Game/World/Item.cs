@@ -15,52 +15,42 @@ namespace Evolution_Game
     /// <summary>
     /// This is a game component that implements IUpdateable.
     /// </summary>
-    public class Inventory
+    public abstract class Item : Microsoft.Xna.Framework.GameComponent
     {
-        private int slots;
-        private int armourSlots;
-        private List<Item> items;
+        int id;
 
-        public Inventory(Game game)
+        public Item(Game game)
+            : base(game)
         {
             // TODO: Construct any child components here
-            items = new List<Item>();
         }
 
         /// <summary>
         /// Allows the game component to perform any initialization it needs to before starting
         /// to run.  This is where it can query for any required services and load content.
         /// </summary>
-        public void Initialize()
+        public override void Initialize()
         {
             // TODO: Add your initialization code here
-            items = new List<Item>();
+
+            base.Initialize();
         }
 
         /// <summary>
         /// Allows the game component to update itself.
         /// </summary>
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
-        public void Update(GameTime gameTime)
+        public override void Update(GameTime gameTime)
         {
             // TODO: Add your update code here
+
+            base.Update(gameTime);
         }
 
         // get/set methods
-        public void addItem(int i)
+        public int getId()
         {
-            
-        }
-
-        public int getTotalItems()
-        {
-            return items.Count;
-        }
-
-        // gets the specified item from the list
-        public int getItem(int index)
-        {
-            return items[index].getId();
+            return id;
         }
     }
 }

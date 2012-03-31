@@ -10,13 +10,14 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 
 
-namespace Evolution_Game.Characters
+namespace Evolution_Game
 {
     /// <summary>
     /// This is a game component that implements IUpdateable.
     /// </summary>
     public class Spawn : Microsoft.Xna.Framework.GameComponent
     {
+        Game g;
         Biome spawnLocation;
         Vector2 position;
         bool defaultSpawn;
@@ -33,6 +34,7 @@ namespace Evolution_Game.Characters
             spawnLocation = biome;
             position = pos;
             defaultSpawn = defSpawn;
+            g = game;
         }
 
         /// <summary>
@@ -57,20 +59,20 @@ namespace Evolution_Game.Characters
             base.Update(gameTime);
         }
 
-        // get set methods
-        public float getPosX()
+        // get/set methods
+        public void setPosition(Vector2 pos)
         {
-            return position.X;
-        }
-
-        public float getPosY()
-        {
-            return position.Y;
+            position = pos;
         }
 
         public Vector2 getPosition()
         {
             return position;
+        }
+
+        public Biome getBiome()
+        {
+            return spawnLocation;
         }
     }
 }

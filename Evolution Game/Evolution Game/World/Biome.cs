@@ -33,6 +33,8 @@ namespace Evolution_Game
         static Random r = new Random();
         Game game;
         bool plSpawn;
+        bool drawGrid = false;
+        KeyboardState oldKeyboard;
 
         // debug variable used to show segments
         Texture2D dividerX, dividerY;
@@ -65,6 +67,8 @@ namespace Evolution_Game
             height = bHeight;
             position = bPosition;
             plSpawn = plSpawnHere;
+
+            oldKeyboard = Keyboard.GetState();
         }
 
         // determines what blocks are initially in the different biomes, blocktypes should be added in the order from most common to least common
@@ -86,8 +90,8 @@ namespace Evolution_Game
                             // set percentage liklihood of spawning blocks within the biome
                             // they are in the same order that the blocks above were added
                             //spawnPercent.Add(100);
-                            spawnPercent.Add(80);
-                            spawnPercent.Add(10);
+                            spawnPercent.Add(40);
+                            spawnPercent.Add(50);
                             spawnPercent.Add(5);
                             spawnPercent.Add(5);
                         break;
@@ -153,6 +157,8 @@ namespace Evolution_Game
             sw.Close();
 
             Console.WriteLine("Biome file " + name.ToString().ToLower() + "_" + type.ToString().ToLower() + segment.X + segment.Y + ".bio written successfully");
+
+            blocks.Clear();
         }
 
         // reads in biome data file
@@ -162,10 +168,10 @@ namespace Evolution_Game
             int numBlHigh = 0;
             float startX = position.X - (width / 2.0f);
             float startY = (position.Y - (height / 2.0f)) - 15; //subtracted 15 to get it to center itself correctly, value is out for some reason
-            char[] delim = new char[3];
+            char[] delim = new char[2];
             delim[0] = '|';
             delim[1] = ',';
-            delim[2] = '\n';
+            //delim[2] = '\n';
 
             StreamReader sr = new StreamReader("../../../../Evolution GameContent/world data/biome data/" + fileName + segment.X + segment.Y + ".bio");
             try
@@ -199,6 +205,14 @@ namespace Evolution_Game
             sr.Close();
 
             Console.WriteLine("Biome file " + name.ToString().ToLower() + "_" + type.ToString().ToLower() + segment.X + segment.Y + ".bio read successfully");
+        }
+
+        public void unloadBiome()
+        {
+            biomeFileWriter();
+
+            blocks.Clear();
+            blocktypes.Clear();
         }
 
         // generates a random number
@@ -375,6 +389,24 @@ namespace Evolution_Game
             }
         }
 
+        public void Update(GameTime gameTime)
+        {
+            KeyboardState keyboard = Keyboard.GetState();
+
+            if (oldKeyboard.IsKeyDown(Keys.G))
+            {
+                if (keyboard.IsKeyUp(Keys.G))
+                {
+                    if (drawGrid == false)
+                        drawGrid = true;
+                    else
+                        drawGrid = false;
+                }
+            }
+
+            oldKeyboard = keyboard;
+        }
+
         // calls the block draw method to render the blocks on screen
         public void Draw(SpriteBatch spriteBatch, float cameraPosition)
         {
@@ -384,8 +416,11 @@ namespace Evolution_Game
             foreach (Block b in blocks)
                 b.Draw(spriteBatch);
 
-            spriteBatch.Draw(dividerX, new Rectangle((int)(position.X + (width / 2)), (int)(position.Y - (height / 2)), 6, height), Color.White);
-            spriteBatch.Draw(dividerY, new Rectangle((int)(position.X - (width / 2)), (int)(position.Y + (height / 2)), width, 6), Color.White);
+            if (drawGrid)
+            {
+                spriteBatch.Draw(dividerX, new Rectangle((int)(position.X + (width / 2)), (int)(position.Y - (height / 2)), 6, height), Color.White);
+                spriteBatch.Draw(dividerY, new Rectangle((int)(position.X - (width / 2)), (int)(position.Y + (height / 2)), width, 6), Color.White);
+            }
         }
 
         // get and set methods

@@ -9,7 +9,6 @@ using Microsoft.Xna.Framework.GamerServices;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
-using Evolution_Game.Characters;
 
 
 namespace Evolution_Game
@@ -36,7 +35,7 @@ namespace Evolution_Game
         }
 
         // world height and width must be a multiple of 15 in order to work
-        public World(Game game, int wHeight, int wWidth, SpriteBatch batch, Player wPlayer)
+        public World(Game game, int wHeight, int wWidth, SpriteBatch batch, Player pl)
             : base(game)
         {
             name = "World 1";
@@ -46,7 +45,7 @@ namespace Evolution_Game
 
             biomes = new List<Biome>();
             playerSpawns = new List<Spawn>();
-            player = wPlayer;
+            player = pl;
         }
 
         // generates an entirely new world
@@ -82,7 +81,7 @@ namespace Evolution_Game
         public override void Initialize()
         {
             // TODO: Add your initialization code here
-            player.Initialize();
+            //player.Initialize();
 
             base.Initialize();
         }
@@ -125,7 +124,7 @@ namespace Evolution_Game
                 new Vector2(540, 305), false));
 
             biomes.Add(new Biome(this.Game, Biome.nameId.NORMAL, Biome.typeId.ATMOS, new Vector2(1, 1), 360, 300,
-                new Vector2(900, 305), false));
+                new Vector2(900, 305), true));
 
             biomes.Add(new Biome(this.Game, Biome.nameId.NORMAL, Biome.typeId.ATMOS, new Vector2(1, 1), 360, 300,
                 new Vector2(1260, 305), false));
@@ -136,7 +135,7 @@ namespace Evolution_Game
             // Normal Ground Biomes           
             // where y = 0
             biomes.Add(new Biome(this.Game, Biome.nameId.NORMAL, Biome.typeId.GROUND, new Vector2(0,0), 360, 300,
-                new Vector2(180, 605), true));
+                new Vector2(180, 605), false));
 
             biomes.Add(new Biome(this.Game, Biome.nameId.NORMAL, Biome.typeId.GROUND, new Vector2(1,0), 360, 300,
                 new Vector2(540, 605), false));
@@ -152,7 +151,7 @@ namespace Evolution_Game
             
             // where y = -1
             biomes.Add(new Biome(this.Game, Biome.nameId.NORMAL, Biome.typeId.GROUND, new Vector2(0, -1), 360, 300,
-                new Vector2(180, 905), true));
+                new Vector2(180, 905), false));
 
             biomes.Add(new Biome(this.Game, Biome.nameId.NORMAL, Biome.typeId.GROUND, new Vector2(1, -1), 360, 300,
                 new Vector2(540, 905), false));
@@ -179,18 +178,25 @@ namespace Evolution_Game
             {
                 sw.WriteLine(b.getName() + "," + b.getType() + "," + b.getSegment().X + ","
                     + b.getSegment().Y + "," + b.getWidth() + "," + b.getHeight() + ","
-                    + b.getPosition().X + "," + b.getPosition().Y + "," + b.spawnHere());                  
+                    + b.getPosition().X + "," + b.getPosition().Y + "," + b.spawnHere());
+
+                if (b.spawnHere())
+                {
+                    player = new Player(Game, 100, 0, new Inventory(Game), new Spawn(Game, b, b.getPosition(), true));
+                }
             }
             sw.Close();
 
             Console.WriteLine("World file " + name + ".wld written successfully");
+
+            player.writePlayerFile();
         }
 
         // loads a .wld file which contains data on the worlds structure
         public void loadWorld()
         {
             int biomeCount = 0;
-            char[] delim = new char[1];
+            char[] delim = new char[2];
             delim[0] = ',';
 
             StreamReader sr = new StreamReader("../../../../Evolution GameContent/world data/" + name + ".wld");
@@ -205,15 +211,10 @@ namespace Evolution_Game
             {
                 temp = sr.ReadLine().Split(delim);
 
-                biomes.Add(new Biome(Game, (Biome.nameId)Convert.ToInt32(temp[0]), (Biome.typeId)Convert.ToInt32(temp[1]), 
-                    new Vector2(Convert.ToInt32(temp[2]), Convert.ToInt32(temp[3])),
-                    Convert.ToInt32(temp[4]), Convert.ToInt32(temp[5]),
-                    new Vector2(Convert.ToInt32(temp[6]), Convert.ToInt32(temp[7])), Convert.ToBoolean(temp[8])));
-
-                if (biomes[i].spawnHere())
-                {
-                    player = new Player(Game, 100, 100, new Inventory(Game), new Spawn(Game, biomes[i], new Vector2(1366/2.0f, 768/2.0f), true));
-                }
+                biomes.Add(new Biome(Game, (Biome.nameId)Convert.ToInt32(temp[0]), (Biome.typeId)Convert.ToInt32(temp[1]),  // this line loads biome Game, name, type 
+                    new Vector2(Convert.ToInt32(temp[2]), Convert.ToInt32(temp[3])),                                        // segment.X, segment.Y
+                    Convert.ToInt32(temp[4]), Convert.ToInt32(temp[5]),                                                     // width, height
+                    new Vector2(Convert.ToInt32(temp[6]), Convert.ToInt32(temp[7])), Convert.ToBoolean(temp[8])));          // position.X, position.Y, playerSpawn
 
                 //biomes[i].printBiome(); //debug code
             }
@@ -221,18 +222,37 @@ namespace Evolution_Game
 
             Console.WriteLine("World file " + name + ".wld read successfully");
 
+            // load in stuff that exists in the world
+            player.loadPlayerFile();
+            loadBiomes(); // loads in all biome segments that exist in the players viewport              
+        }
+
+        public void loadBiomes()
+        {
             // load in biome data
             foreach (Biome b in biomes)
             {
                 Biome.nameId tempN = (Biome.nameId)b.getName();
                 String n = tempN.ToString().ToLower();
-                
+
                 Biome.typeId tempT = (Biome.typeId)b.getType();
                 String t = tempT.ToString().ToLower();
-                
+
                 b.loadBiome(n + "_" + t);
+
+                if (b.spawnHere())
+                {
+                    player.setSpawn(new Spawn(Game, b, new Vector2(100, 300), true));
+                    player.setCurrentBiome(b);
+                }
             }
+
             LoadContent();
+        }
+
+        private void unloadBiomes()
+        {
+
         }
 
         private void ScrollCamera(Viewport viewport)
@@ -265,6 +285,9 @@ namespace Evolution_Game
             // TODO: Add your update code here
             player.Update(gameTime);
 
+            foreach (Biome b in biomes)
+                b.Update(gameTime);
+
             base.Update(gameTime);
         }
 
@@ -273,12 +296,14 @@ namespace Evolution_Game
             ScrollCamera(spriteBatch.GraphicsDevice.Viewport);
             Matrix cameraTransform = Matrix.CreateTranslation(-cameraPosition, 0.0f, 0.0f);
             
-            spriteBatch.Begin(SpriteSortMode.Texture, BlendState.AlphaBlend, null, null, null, null, cameraTransform);
-            foreach (Biome b in biomes)
-            {
-                b.Draw(spriteBatch, cameraPosition);
-            }
-            player.Draw(spriteBatch);
+            // draws things in the world using the spriteBatch
+            spriteBatch.Begin(SpriteSortMode.Texture, BlendState.AlphaBlend, null, null, null, null, cameraTransform); 
+                foreach (Biome b in biomes)
+                {
+                    b.Draw(spriteBatch, cameraPosition);
+                }
+
+                player.Draw(spriteBatch);
             spriteBatch.End();     
         }
     }

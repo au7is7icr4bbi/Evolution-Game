@@ -8,7 +8,6 @@ using Microsoft.Xna.Framework.GamerServices;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
-using Evolution_Game.Characters;
 
 namespace Evolution_Game
 {
@@ -20,9 +19,9 @@ namespace Evolution_Game
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         World homeWorld;
-        Player player;
         UserInterface ui;
         Menu mainMenu;
+        Player player;
         bool noDraw;
 
         // performance code, used to determine frames per second and lag
@@ -59,9 +58,9 @@ namespace Evolution_Game
             spriteBatch = new SpriteBatch(GraphicsDevice);
             noDraw = false;
 
-            player = new Player(this, 100, 0, new Inventory(this), new Vector2(400, 400));
+            player = new Player(this, 100, 0, new Inventory(this), new Spawn(this));
 
-            homeWorld = new World(this, 20000, 20000, spriteBatch, player);
+            homeWorld = new World(this, 0, 0, spriteBatch, player);
             homeWorld.DrawOrder = 0;
 
             ui = new UserInterface(this);
@@ -136,7 +135,6 @@ namespace Evolution_Game
             }
 
             // TODO: Add your update logic here
-            player.Update(gameTime);
 
             base.Update(gameTime);
         }

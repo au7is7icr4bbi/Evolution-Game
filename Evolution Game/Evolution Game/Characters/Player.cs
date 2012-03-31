@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework.GamerServices;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
-using Evolution_Game.Characters;
+using System.IO;
 
 
 namespace Evolution_Game
@@ -26,22 +26,9 @@ namespace Evolution_Game
             jumpSpeed = 50.0f;
         }
 
-        public Player(Game g, int pHealth, int pMana, Inventory pInventory, Vector2 pos)
-        {
-            health = pHealth;
-            mana = pMana;
-            items = pInventory;
-            position = pos;
-            spawn = null;
-            box = new BoundingBox();
-            physics = new Physics();
-            moveSpeed = 100.0f;
-            jumpSpeed = 50.0f;
-            game = g;
-        }
-
         public Player(Game g, int pHealth, int pMana, Inventory pInventory, Spawn pSpawn)
         {
+            id = 0;
             health = pHealth;
             mana = pMana;
             items = pInventory;
@@ -66,6 +53,76 @@ namespace Evolution_Game
         public override void LoadContent()
         {
             texture = game.Content.Load<Texture2D>("player tex/player_tex");
+            base.LoadContent();
+        }
+
+        public void writePlayerFile()
+        {
+            StreamWriter sw = new StreamWriter("../../../../Evolution GameContent/world data/player data/player_" +
+                id + ".plr");
+            
+            sw.WriteLine(id);
+            sw.WriteLine(health +"," + mana);
+
+            if (items.getTotalItems() == 0) // if there are no items in the inventory write "-1" 
+            {
+                sw.WriteLine("-1");
+            }
+            else // else write the id's of each item in the order the inventory stores them
+            {
+                for (int i = 0; i < items.getTotalItems(); i++)
+                {
+                    if (i != 0)
+                        sw.Write(",");
+
+                    sw.Write(items.getItem(i));
+                }
+            }
+
+            sw.WriteLine(spawn.getPosition().X + "," + spawn.getPosition().Y);
+
+            sw.WriteLine(spawn.getBiome().getName().ToString() + "," + spawn.getBiome().getType().ToString() + "," + 
+                spawn.getBiome().getSegment().X + "," + spawn.getBiome().getSegment().Y); // writes biome name and type even though they arent used just to increase file readability
+
+            sw.Close();
+
+            Console.WriteLine("Player file player_" + id + ".plr written successfully");
+        }
+
+        public void loadPlayerFile()
+        {
+            String[] temp;
+            char[] delim = new char[2];
+            delim[0] = ',';
+
+            StreamReader sr = new StreamReader("../../../../Evolution GameContent/world data/player data/player_" +
+                id + ".plr");
+
+            temp = sr.ReadLine().Split(delim);
+            id = Convert.ToInt32(temp[0]);
+
+            temp = sr.ReadLine().Split(delim);
+            health = Convert.ToInt32(temp[0]);
+            mana = Convert.ToInt32(temp[1]);
+
+            temp = sr.ReadLine().Split(delim);
+
+            if (temp[0] == "-1")
+            {
+                items = null;
+            }
+            else
+            {
+                for (int i = 0; i < temp.Length; i++)
+                {
+                    items.addItem(Convert.ToInt32(temp[i]));
+                }
+            }
+
+            temp = sr.ReadLine().Split(delim);
+            spawn.setPosition(new Vector2(Convert.ToInt32(temp[0]), Convert.ToInt32(temp[1])));
+
+            sr.Close();
         }
 
         /// <summary>
@@ -99,14 +156,25 @@ namespace Evolution_Game
         }
 
         // get/set methods
-        public float getSpawnPosX()
+        public void setSpawn(Spawn newSpawn)
         {
-            return spawn.getPosX();
+            spawn = newSpawn;
         }
 
-        public float getSpawnPosY()
+        public void setCurrentBiome(Biome b)
         {
-            return spawn.getPosY();
+            currentBiome = b;
+        }
+
+        public float getSpawnPosition()
+        {
+            return spawn.getPosition().X;
+        }
+
+        // gets the biome that the player is currently located in
+        public Biome getCurrentBiome()
+        {
+            return currentBiome;
         }
     }
 }
