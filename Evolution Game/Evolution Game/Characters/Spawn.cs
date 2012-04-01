@@ -60,6 +60,11 @@ namespace Evolution_Game
         }
 
         // get/set methods
+        public void setBiome(Biome b)
+        {
+            spawnLocation = b;
+        }
+
         public void setPosition(Vector2 pos)
         {
             position = pos;
