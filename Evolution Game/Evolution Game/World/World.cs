@@ -10,7 +10,6 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 
-
 namespace Evolution_Game
 {
     /// <summary>
@@ -21,6 +20,8 @@ namespace Evolution_Game
         private String name;
         private int height;
         private int width;
+        private int segTotalX;
+        private int segTotalY;
         private List<Biome> biomes;
         private List<Spawn> playerSpawns;
         private float cameraPosition;
@@ -67,6 +68,8 @@ namespace Evolution_Game
                 b.generateBiome();
             }
 
+            calculateNumBiomesXY();
+
             // write the biomes to file
             worldFileWriter();
 
@@ -95,8 +98,38 @@ namespace Evolution_Game
             }
         }
 
+        // calculates the total number of biomes across the width and height of the map
+        public void calculateNumBiomesXY()
+        {
+            int maxX = 0;
+            int maxY = 0;
+            int minX = 0;
+            int minY = 0;
+
+            foreach (Biome b in biomes)
+            {
+                if (b.getSegment().X > maxX)
+                    maxX = (int)b.getSegment().X;
+
+                if (b.getSegment().Y > maxY)
+                    maxY = (int)b.getSegment().Y;
+
+                if (b.getSegment().X < minX)
+                    minX = (int)b.getSegment().X;
+
+                if (b.getSegment().Y < minY)
+                    minY = (int)b.getSegment().Y;
+            }
+
+            segTotalX = maxX + Math.Abs(minX) + 1; // 1 is added since segement 0,0 will always be present
+            segTotalY = maxY + Math.Abs(minY) + 1;
+
+            Console.WriteLine(segTotalX + "\t" + segTotalY);
+        }
+
         // added biomes width and height MUST be a MULTIPLE of 15 AND 4, otherwise there are calculation problems
         // they should also be approximately (screenWidth / 4) pixels wide and (screenHeight / 4) pixels high
+        // they should also be added using the following ratio 4:3
         public void addBiomes()
         {
             // Normal Atmosphere biomes
@@ -107,14 +140,17 @@ namespace Evolution_Game
             biomes.Add(new Biome(this.Game, Biome.nameId.NORMAL, Biome.typeId.ATMOS, new Vector2(1, 2), 360, 300,
                 new Vector2(540, 5), false));
 
-            biomes.Add(new Biome(this.Game, Biome.nameId.NORMAL, Biome.typeId.ATMOS, new Vector2(1, 2), 360, 300,
+            biomes.Add(new Biome(this.Game, Biome.nameId.NORMAL, Biome.typeId.ATMOS, new Vector2(2, 2), 360, 300,
                 new Vector2(900, 5), false));
 
-            biomes.Add(new Biome(this.Game, Biome.nameId.NORMAL, Biome.typeId.ATMOS, new Vector2(1, 2), 360, 300,
+            biomes.Add(new Biome(this.Game, Biome.nameId.NORMAL, Biome.typeId.ATMOS, new Vector2(3, 2), 360, 300,
                 new Vector2(1260, 5), false));
 
-            biomes.Add(new Biome(this.Game, Biome.nameId.NORMAL, Biome.typeId.ATMOS, new Vector2(1, 2), 360, 300,
+            biomes.Add(new Biome(this.Game, Biome.nameId.NORMAL, Biome.typeId.ATMOS, new Vector2(4, 2), 360, 300,
                 new Vector2(1620, 5), false));
+
+            biomes.Add(new Biome(this.Game, Biome.nameId.NORMAL, Biome.typeId.ATMOS, new Vector2(5, 2), 360, 300,
+                new Vector2(1980, 5), false));
 
             // where y = 1
             biomes.Add(new Biome(this.Game, Biome.nameId.NORMAL, Biome.typeId.ATMOS, new Vector2(0,1), 360, 300,
@@ -123,14 +159,17 @@ namespace Evolution_Game
             biomes.Add(new Biome(this.Game, Biome.nameId.NORMAL, Biome.typeId.ATMOS, new Vector2(1, 1), 360, 300,
                 new Vector2(540, 305), false));
 
-            biomes.Add(new Biome(this.Game, Biome.nameId.NORMAL, Biome.typeId.ATMOS, new Vector2(1, 1), 360, 300,
+            biomes.Add(new Biome(this.Game, Biome.nameId.NORMAL, Biome.typeId.ATMOS, new Vector2(2, 1), 360, 300,
                 new Vector2(900, 305), true));
 
-            biomes.Add(new Biome(this.Game, Biome.nameId.NORMAL, Biome.typeId.ATMOS, new Vector2(1, 1), 360, 300,
+            biomes.Add(new Biome(this.Game, Biome.nameId.NORMAL, Biome.typeId.ATMOS, new Vector2(3, 1), 360, 300,
                 new Vector2(1260, 305), false));
 
-            biomes.Add(new Biome(this.Game, Biome.nameId.NORMAL, Biome.typeId.ATMOS, new Vector2(1, 1), 360, 300,
+            biomes.Add(new Biome(this.Game, Biome.nameId.NORMAL, Biome.typeId.ATMOS, new Vector2(4, 1), 360, 300,
                 new Vector2(1620, 305), false));
+
+            biomes.Add(new Biome(this.Game, Biome.nameId.NORMAL, Biome.typeId.ATMOS, new Vector2(5, 1), 360, 300,
+                new Vector2(1980, 305), false));
 
             // Normal Ground Biomes           
             // where y = 0
@@ -149,6 +188,9 @@ namespace Evolution_Game
             biomes.Add(new Biome(this.Game, Biome.nameId.NORMAL, Biome.typeId.GROUND, new Vector2(4, 0), 360, 300,
                             new Vector2(1620, 605), false));
             
+            biomes.Add(new Biome(this.Game, Biome.nameId.NORMAL, Biome.typeId.ATMOS, new Vector2(5, 0), 360, 300,
+                new Vector2(1980, 605), false));
+            
             // where y = -1
             biomes.Add(new Biome(this.Game, Biome.nameId.NORMAL, Biome.typeId.GROUND, new Vector2(0, -1), 360, 300,
                 new Vector2(180, 905), false));
@@ -165,6 +207,9 @@ namespace Evolution_Game
             biomes.Add(new Biome(this.Game, Biome.nameId.NORMAL, Biome.typeId.GROUND, new Vector2(4, -1), 360, 300,
                             new Vector2(1620, 905), false));
 
+            biomes.Add(new Biome(this.Game, Biome.nameId.NORMAL, Biome.typeId.ATMOS, new Vector2(5, -1), 360, 300,
+                new Vector2(1980, 905), false));
+
         }
 
         public void worldFileWriter()
@@ -173,6 +218,7 @@ namespace Evolution_Game
 
             sw.WriteLine(width + "," + height);
             sw.WriteLine(biomes.Count);
+            sw.WriteLine(segTotalX + "," + segTotalY);
 
             foreach (Biome b in biomes)
             {
@@ -207,6 +253,10 @@ namespace Evolution_Game
 
             biomeCount = Convert.ToInt32(sr.ReadLine());
 
+            temp = sr.ReadLine().Split(delim);
+            segTotalX = Convert.ToInt32(temp[0]);
+            segTotalY = Convert.ToInt32(temp[1]);
+
             for (int i = 0; i < biomeCount; i++)
             {
                 temp = sr.ReadLine().Split(delim);
@@ -239,20 +289,37 @@ namespace Evolution_Game
                 String t = tempT.ToString().ToLower();
 
                 b.loadBiome(n + "_" + t);
+            }          
 
-                if (b.spawnHere())
-                {
-                    player.setSpawn(new Spawn(Game, b, new Vector2(100, 300), true));
-                    player.setCurrentBiome(b);
-                }
-            }
-
+            // now that biomes have been loaded, load up their content
             LoadContent();
         }
 
-        private void unloadBiomes()
+        // removes biomes from the list that are not visible on screen and loads in biomes that should be loaded
+        private void unloadLoadBiomes()
         {
+            foreach (Biome b in biomes)
+            {
+                if (b.getSegment().X < player.getCurrentBiome().getSegment().X - 3)
+                {
+                    //biomes.Remove(b);
+                }
+                
+                if (b.getSegment().X > player.getCurrentBiome().getSegment().X + 3)
+                {
+                    //biomes.Remove(b);
+                }
 
+                if (b.getSegment().Y < player.getCurrentBiome().getSegment().Y - 3)
+                {
+
+                }
+
+                if (b.getSegment().Y > player.getCurrentBiome().getSegment().Y + 3)
+                {
+                    //biomes.Remove(b);
+                }
+            }
         }
 
         private void ScrollCamera(Viewport viewport)
@@ -284,6 +351,64 @@ namespace Evolution_Game
         {
             // TODO: Add your update code here
             player.Update(gameTime);
+
+            // if player position.X is outside of the players current biome width range then reset current biome to is appropriate neighbour
+            if (player.getCurrentBiome() != null && biomes.Count != 0) // test that the current biome and biomes have been initialised before entering the loop
+            {
+                // if the player is outside the width of the biome on the left then set currentBiome to the biome left of the players previous biome
+                if (player.getPlayerPos().X > player.getCurrentBiome().getPosition().X + (player.getCurrentBiome().getWidth() / 2))
+                {
+                    for (int i = 0; i < biomes.Count; i++)
+                    {
+                        if (player.getCurrentBiome().getSegment() == biomes[i].getSegment() && i + 1 < biomes.Count)
+                            player.setCurrentBiome(biomes[i + 1]);
+
+                        // debug code
+                        Console.WriteLine(player.getCurrentBiome().getSegment());
+                    }
+                }
+                
+                // if the player is outside the width of the biome on the left then set currentBiome to the biome left of the players previous biome
+                else if (player.getPlayerPos().X < player.getCurrentBiome().getPosition().X - (player.getCurrentBiome().getWidth() / 2))
+                {
+                    for (int i = 0; i < biomes.Count; i++)
+                    {
+                        if (player.getCurrentBiome().getSegment() == biomes[i].getSegment() && i - 1 > 0)
+                            player.setCurrentBiome(biomes[i - 1]);
+
+                        // debug code
+                        Console.WriteLine(player.getCurrentBiome().getSegment());
+                    }
+                }
+
+                // if player position.Y is outside of the players current biome height range then reset current biome to is neighbour  
+                if (player.getPlayerPos().Y > player.getCurrentBiome().getPosition().Y + (player.getCurrentBiome().getHeight() / 2))
+                {
+                    for (int i = 0; i < biomes.Count; i++)
+                    {
+                        if (player.getCurrentBiome().getSegment() == biomes[i].getSegment() && i + 6 < biomes.Count)
+                            player.setCurrentBiome(biomes[i + segTotalX]);
+
+                        // debug code
+                        Console.WriteLine(player.getCurrentBiome().getSegment());
+                    }
+                }
+                
+                else if (player.getPlayerPos().Y < player.getCurrentBiome().getPosition().Y - (player.getCurrentBiome().getHeight() / 2))
+                {
+                    for (int i = 0; i < biomes.Count; i++)
+                    {
+                        if (player.getCurrentBiome().getSegment() == biomes[i].getSegment() && i - 6 > 0)
+                            player.setCurrentBiome(biomes[i - segTotalX]);
+
+                        // debug code
+                        Console.WriteLine(player.getCurrentBiome().getSegment());
+                    }
+                }
+                
+            }
+
+            //unloadLoadBiomes();
 
             foreach (Biome b in biomes)
                 b.Update(gameTime);

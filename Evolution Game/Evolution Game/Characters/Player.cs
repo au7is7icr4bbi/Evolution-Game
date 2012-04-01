@@ -81,8 +81,11 @@ namespace Evolution_Game
 
             sw.WriteLine(spawn.getPosition().X + "," + spawn.getPosition().Y);
 
-            sw.WriteLine(spawn.getBiome().getName().ToString() + "," + spawn.getBiome().getType().ToString() + "," + 
-                spawn.getBiome().getSegment().X + "," + spawn.getBiome().getSegment().Y); // writes biome name and type even though they arent used just to increase file readability
+            // writes ther players spawn biomes data
+            sw.WriteLine(spawn.getBiome().getName().ToString() + "," + spawn.getBiome().getType().ToString() + "," +
+                spawn.getBiome().getSegment().X + "," + spawn.getBiome().getSegment().Y + "," + 
+                spawn.getBiome().getWidth() + "," + spawn.getBiome().getHeight() + "," +
+                spawn.getBiome().getPosition().X + "," + spawn.getBiome().getPosition().Y);
 
             sw.Close();
 
@@ -121,6 +124,14 @@ namespace Evolution_Game
 
             temp = sr.ReadLine().Split(delim);
             spawn.setPosition(new Vector2(Convert.ToInt32(temp[0]), Convert.ToInt32(temp[1])));
+            position = spawn.getPosition(); // players position begins at default spawn when a level is loaded
+
+            temp = sr.ReadLine().Split(delim);
+            currentBiome = new Biome(game, (Biome.nameId)Convert.ToInt32(temp[0]), (Biome.typeId)Convert.ToInt32(temp[1]),
+                new Vector2(Convert.ToInt32(temp[2]), Convert.ToInt32(temp[3])), Convert.ToInt32(temp[4]), Convert.ToInt32(temp[5]),
+                new Vector2(Convert.ToInt32(temp[6]), Convert.ToInt32(temp[7])), true);
+
+            spawn.setBiome(currentBiome); // spawn biome and current biome are the same when the game is loaded
 
             sr.Close();
         }
@@ -131,7 +142,6 @@ namespace Evolution_Game
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         public override void Update(GameTime gameTime)
         {
-            // TODO: Add your update code here
             if (Keyboard.GetState().IsKeyDown(Keys.D))
                 position = physics.horizontalMotion(position, moveSpeed, gameTime);
 
@@ -169,6 +179,11 @@ namespace Evolution_Game
         public float getSpawnPosition()
         {
             return spawn.getPosition().X;
+        }
+
+        public Vector2 getPlayerPos()
+        {
+            return position;
         }
 
         // gets the biome that the player is currently located in
