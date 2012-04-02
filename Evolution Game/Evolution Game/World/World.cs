@@ -378,14 +378,13 @@ namespace Evolution_Game
         {
             for (int i = 0; i < biomes.Count; i++)
             {
-                if (biomes[i].getSegment().X < player.getCurrentBiome().getSegment().X + 2
-                    && biomes[i].getSegment().X > player.getCurrentBiome().getSegment().X - 2)
+                if (biomes[i].getSegment().X < player.getCurrentBiome().getSegment().X + 3
+                    && biomes[i].getSegment().X > player.getCurrentBiome().getSegment().X - 3)
                 {
-                    if (biomes[i].getSegment().Y < player.getCurrentBiome().getSegment().Y + (1 * segTotalX)
-                       && biomes[i].getSegment().Y > player.getCurrentBiome().getSegment().Y - (1 * segTotalX))
+                    if (biomes[i].getSegment().Y < player.getCurrentBiome().getSegment().Y + 3
+                       && biomes[i].getSegment().Y > player.getCurrentBiome().getSegment().Y - 3)
                     {
                         biomes[i].setDrawBiome(true);
-                        //Console.WriteLine(player.getCurrentBiome().getSegment().Y + (1 * segTotalX));
                     }
                     else
                     {
