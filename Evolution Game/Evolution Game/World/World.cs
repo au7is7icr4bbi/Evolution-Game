@@ -123,8 +123,6 @@ namespace Evolution_Game
 
             segTotalX = maxX + Math.Abs(minX) + 1; // 1 is added since segement 0,0 will always be present
             segTotalY = maxY + Math.Abs(minY) + 1;
-
-            Console.WriteLine(segTotalX + "\t" + segTotalY);
         }
 
         // added biomes width and height MUST be a MULTIPLE of 15 AND 4, otherwise there are calculation problems
@@ -188,7 +186,7 @@ namespace Evolution_Game
             biomes.Add(new Biome(this.Game, Biome.nameId.NORMAL, Biome.typeId.GROUND, new Vector2(4, 0), 360, 300,
                             new Vector2(1620, 605), false));
             
-            biomes.Add(new Biome(this.Game, Biome.nameId.NORMAL, Biome.typeId.ATMOS, new Vector2(5, 0), 360, 300,
+            biomes.Add(new Biome(this.Game, Biome.nameId.NORMAL, Biome.typeId.GROUND, new Vector2(5, 0), 360, 300,
                 new Vector2(1980, 605), false));
             
             // where y = -1
@@ -207,7 +205,7 @@ namespace Evolution_Game
             biomes.Add(new Biome(this.Game, Biome.nameId.NORMAL, Biome.typeId.GROUND, new Vector2(4, -1), 360, 300,
                             new Vector2(1620, 905), false));
 
-            biomes.Add(new Biome(this.Game, Biome.nameId.NORMAL, Biome.typeId.ATMOS, new Vector2(5, -1), 360, 300,
+            biomes.Add(new Biome(this.Game, Biome.nameId.NORMAL, Biome.typeId.GROUND, new Vector2(5, -1), 360, 300,
                 new Vector2(1980, 905), false));
 
         }
@@ -294,34 +292,7 @@ namespace Evolution_Game
             // now that biomes have been loaded, load up their content
             LoadContent();
         }
-
-        // removes biomes from the list that are not visible on screen and loads in biomes that should be loaded
-        private void unloadLoadBiomes()
-        {
-            foreach (Biome b in biomes)
-            {
-                if (b.getSegment().X < player.getCurrentBiome().getSegment().X - 3)
-                {
-                    //biomes.Remove(b);
-                }
-                
-                if (b.getSegment().X > player.getCurrentBiome().getSegment().X + 3)
-                {
-                    //biomes.Remove(b);
-                }
-
-                if (b.getSegment().Y < player.getCurrentBiome().getSegment().Y - 3)
-                {
-
-                }
-
-                if (b.getSegment().Y > player.getCurrentBiome().getSegment().Y + 3)
-                {
-                    //biomes.Remove(b);
-                }
-            }
-        }
-
+        
         private void ScrollCamera(Viewport viewport)
         {
             const float ViewMargin = 0.5f;
@@ -341,17 +312,11 @@ namespace Evolution_Game
             // Update the camera position, but prevent scrolling off the ends of the level.
             float maxCameraPosition = 15 * width - viewport.Width;
             cameraPosition = MathHelper.Clamp(cameraPosition + cameraMovement, 0.0f, maxCameraPosition);
-        }  
+        }
 
-        /// <summary>
-        /// Allows the game component to update itself.
-        /// </summary>
-        /// <param name="gameTime">Provides a snapshot of timing values.</param>
-        public override void Update(GameTime gameTime)
+        // updates the players current biome member if the player has moved into a different biome
+        public void updatePlayerCurrBiome()
         {
-            // TODO: Add your update code here
-            player.Update(gameTime);
-
             // if player position.X is outside of the players current biome width range then reset current biome to is appropriate neighbour
             if (player.getCurrentBiome() != null && biomes.Count != 0) // test that the current biome and biomes have been initialised before entering the loop
             {
@@ -367,7 +332,7 @@ namespace Evolution_Game
                         Console.WriteLine(player.getCurrentBiome().getSegment());
                     }
                 }
-                
+
                 // if the player is outside the width of the biome on the left then set currentBiome to the biome left of the players previous biome
                 else if (player.getPlayerPos().X < player.getCurrentBiome().getPosition().X - (player.getCurrentBiome().getWidth() / 2))
                 {
@@ -386,29 +351,66 @@ namespace Evolution_Game
                 {
                     for (int i = 0; i < biomes.Count; i++)
                     {
-                        if (player.getCurrentBiome().getSegment() == biomes[i].getSegment() && i + 6 < biomes.Count)
+                        if (player.getCurrentBiome().getSegment() == biomes[i].getSegment() && i + segTotalX < biomes.Count)
                             player.setCurrentBiome(biomes[i + segTotalX]);
 
                         // debug code
                         Console.WriteLine(player.getCurrentBiome().getSegment());
                     }
                 }
-                
+
                 else if (player.getPlayerPos().Y < player.getCurrentBiome().getPosition().Y - (player.getCurrentBiome().getHeight() / 2))
                 {
                     for (int i = 0; i < biomes.Count; i++)
                     {
-                        if (player.getCurrentBiome().getSegment() == biomes[i].getSegment() && i - 6 > 0)
+                        if (player.getCurrentBiome().getSegment() == biomes[i].getSegment() && i - segTotalX > 0)
                             player.setCurrentBiome(biomes[i - segTotalX]);
 
                         // debug code
                         Console.WriteLine(player.getCurrentBiome().getSegment());
                     }
                 }
+            }
+        }
+
+        // sets the varariable draw for the biomes, this tells the game which biomes to draw
+        public void updateDrawableBiomes()
+        {
+            for (int i = 0; i < biomes.Count; i++)
+            {
+                if (biomes[i].getSegment().X < player.getCurrentBiome().getSegment().X + 3
+                    && biomes[i].getSegment().X > player.getCurrentBiome().getSegment().X - 3)
+                {
+                    if (biomes[i].getSegment().Y < player.getCurrentBiome().getSegment().Y + (1 * segTotalX)
+                       && biomes[i].getSegment().Y > player.getCurrentBiome().getSegment().Y - (1 * segTotalX))
+                    {
+                        biomes[i].setDrawBiome(true);
+                        //Console.WriteLine(player.getCurrentBiome().getSegment().Y + (1 * segTotalX));
+                    }
+                    else
+                    {
+                        biomes[i].setDrawBiome(false);
+                    }
+                }
+                else
+                {
+                    biomes[i].setDrawBiome(false);
+                }
+                
                 
             }
+        }
 
-            //unloadLoadBiomes();
+        /// <summary>
+        /// Allows the game component to update itself.
+        /// </summary>
+        /// <param name="gameTime">Provides a snapshot of timing values.</param>
+        public override void Update(GameTime gameTime)
+        {
+            // TODO: Add your update code here
+            player.Update(gameTime);
+            updatePlayerCurrBiome();
+            updateDrawableBiomes();
 
             foreach (Biome b in biomes)
                 b.Update(gameTime);
@@ -425,7 +427,8 @@ namespace Evolution_Game
             spriteBatch.Begin(SpriteSortMode.Texture, BlendState.AlphaBlend, null, null, null, null, cameraTransform); 
                 foreach (Biome b in biomes)
                 {
-                    b.Draw(spriteBatch, cameraPosition);
+                    if (b.getDrawBiome())
+                        b.Draw(spriteBatch, cameraPosition);
                 }
 
                 player.Draw(spriteBatch);

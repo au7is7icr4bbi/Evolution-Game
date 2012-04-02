@@ -33,7 +33,8 @@ namespace Evolution_Game
         static Random r = new Random();
         Game game;
         bool plSpawn;
-        bool drawGrid = false;
+        bool drawGrid;
+        bool drawBiome;
         KeyboardState oldKeyboard;
 
         // debug variable used to show segments
@@ -67,6 +68,8 @@ namespace Evolution_Game
             height = bHeight;
             position = bPosition;
             plSpawn = plSpawnHere;
+
+            drawGrid = false;
 
             oldKeyboard = Keyboard.GetState();
         }
@@ -424,6 +427,11 @@ namespace Evolution_Game
         }
 
         // get and set methods
+        public void setDrawBiome(bool d)
+        {
+            drawBiome = d;
+        }
+
         public int getName()
         {
             return (int)name;
@@ -447,6 +455,11 @@ namespace Evolution_Game
         public int getHeight()
         {
             return height;
+        }
+
+        public bool getDrawBiome()
+        {
+            return drawBiome;
         }
 
         public Vector2 getPosition()
