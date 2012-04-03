@@ -11,15 +11,6 @@
       <Time>2012-03-30T14:51:57.7753906+11:00</Time>
     </Item>
     <Item>
-      <Source>player tex\player_tex.png</Source>
-      <Name>player tex\player_tex</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-      <Options>None</Options>
-      <Output>C:\Users\Matt\Desktop\Evolution-Game\Evolution Game\Evolution Game\bin\x86\Debug\Content\player tex\player_tex.xnb</Output>
-      <Time>2012-03-20T15:52:43.336914+11:00</Time>
-    </Item>
-    <Item>
       <Source>block tex\water_tex.png</Source>
       <Name>block tex\water_tex</Name>
       <Importer>TextureImporter</Importer>
@@ -99,6 +90,51 @@
       <Options>None</Options>
       <Output>C:\Users\Matt\Desktop\Evolution-Game\Evolution Game\Evolution Game\bin\x86\Debug\Content\misc\divider.xnb</Output>
       <Time>2012-03-27T17:56:35.3046875+11:00</Time>
+    </Item>
+    <Item>
+      <Source>player tex\player_cave_L01.png</Source>
+      <Name>player tex\player_cave_L01</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\Matt\Desktop\Evolution-Game\Evolution Game\Evolution Game\bin\x86\Debug\Content\player tex\player_cave_L01.xnb</Output>
+      <Time>2012-04-03T15:49:42.8867188+10:00</Time>
+    </Item>
+    <Item>
+      <Source>player tex\player_cave_R01.png</Source>
+      <Name>player tex\player_cave_R01</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\Matt\Desktop\Evolution-Game\Evolution Game\Evolution Game\bin\x86\Debug\Content\player tex\player_cave_R01.xnb</Output>
+      <Time>2012-04-03T15:51:15.3476563+10:00</Time>
+    </Item>
+    <Item>
+      <Source>character tex\crocodile_R01.png</Source>
+      <Name>character tex\crocodile_R01</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\Matt\Desktop\Evolution-Game\Evolution Game\Evolution Game\bin\x86\Debug\Content\character tex\crocodile_R01.xnb</Output>
+      <Time>2012-04-03T17:05:05.9091797+10:00</Time>
+    </Item>
+    <Item>
+      <Source>UI tex\health.png</Source>
+      <Name>UI tex\health</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\Matt\Desktop\Evolution-Game\Evolution Game\Evolution Game\bin\x86\Debug\Content\UI tex\health.xnb</Output>
+      <Time>2012-04-03T18:19:54.9902344+10:00</Time>
+    </Item>
+    <Item>
+      <Source>UI tex\mana.png</Source>
+      <Name>UI tex\mana</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+      <Options>None</Options>
+      <Output>C:\Users\Matt\Desktop\Evolution-Game\Evolution Game\Evolution Game\bin\x86\Debug\Content\UI tex\mana.xnb</Output>
+      <Time>2012-04-03T18:20:25.1923829+10:00</Time>
     </Item>
     <BuildSuccessful>true</BuildSuccessful>
     <Settings>

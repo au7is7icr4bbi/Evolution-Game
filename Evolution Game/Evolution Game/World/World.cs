@@ -382,7 +382,7 @@ namespace Evolution_Game
                     && biomes[i].getSegment().X > player.getCurrentBiome().getSegment().X - 3)
                 {
                     if (biomes[i].getSegment().Y < player.getCurrentBiome().getSegment().Y + 3
-                       && biomes[i].getSegment().Y > player.getCurrentBiome().getSegment().Y - 3)
+                        && biomes[i].getSegment().Y > player.getCurrentBiome().getSegment().Y - 3)
                     {
                         biomes[i].setDrawBiome(true);
                     }
@@ -395,8 +395,6 @@ namespace Evolution_Game
                 {
                     biomes[i].setDrawBiome(false);
                 }
-                
-                
             }
         }
 
@@ -423,14 +421,14 @@ namespace Evolution_Game
             Matrix cameraTransform = Matrix.CreateTranslation(-cameraPosition, 0.0f, 0.0f);
             
             // draws things in the world using the spriteBatch
-            spriteBatch.Begin(SpriteSortMode.Texture, BlendState.AlphaBlend, null, null, null, null, cameraTransform); 
+           spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, null, null, cameraTransform);
+                player.Draw(spriteBatch);
                 foreach (Biome b in biomes)
                 {
                     if (b.getDrawBiome())
                         b.Draw(spriteBatch, cameraPosition);
                 }
-
-                player.Draw(spriteBatch);
+                
             spriteBatch.End();     
         }
     }

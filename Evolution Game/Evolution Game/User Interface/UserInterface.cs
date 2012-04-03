@@ -15,51 +15,48 @@ namespace Evolution_Game
     /// <summary>
     /// This is a game component that implements IUpdateable.
     /// </summary>
-    public class UserInterface : Microsoft.Xna.Framework.DrawableGameComponent
+    public class UserInterface
     {
-        SpriteBatch sprite;
         Texture2D cursor;
-        MouseState mouse;
+        Texture2D health_tex;
+        Texture2D mana_tex;
+        Game g;
 
         public UserInterface(Game game)
-            : base(game)
         {
             // TODO: Construct any child components here
-            sprite = new SpriteBatch(game.GraphicsDevice);
+           
+            g = game;
         }
 
         /// <summary>
         /// Allows the game component to perform any initialization it needs to before starting
         /// to run.  This is where it can query for any required services and load content.
         /// </summary>
-        public override void Initialize()
+        public void Initialize()
         {
             // TODO: Add your initialization code here
-            cursor = Game.Content.Load<Texture2D>("UI tex/cursor");
-            mouse = Mouse.GetState();
-
-            base.Initialize();
+            health_tex = g.Content.Load<Texture2D>("UI tex/health");
+            mana_tex = g.Content.Load<Texture2D>("UI tex/mana");
         }
 
         /// <summary>
         /// Allows the game component to update itself.
         /// </summary>
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
-        public override void Update(GameTime gameTime)
+        public void Update(GameTime gameTime)
         {
             // TODO: Add your update code here
-            mouse = Mouse.GetState();
-
-            base.Update(gameTime);
         }
 
-        public override void Draw(GameTime gameTime)
+        public void Draw(SpriteBatch sprite, int health, int mana, Vector2 playerPos)
         {
-            sprite.Begin();
-                sprite.Draw(cursor, new Vector2(mouse.X, mouse.Y), Color.White);
-            sprite.End();
+            int numHearts = health / 10;
 
-            base.Draw(gameTime);
+            for (int i = 0; i < numHearts; i++)
+            {
+                sprite.Draw(health_tex, new Vector2(playerPos.X + (i*30), 30), Color.White);
+            }
         }
     }
 }

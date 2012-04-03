@@ -17,7 +17,7 @@ namespace Evolution_Game
         protected int health;
         protected int mana;
         protected Inventory items;
-        protected Texture2D texture;
+        protected List<Texture2D> textures;
         protected Vector2 position;
         public Vector2 Position { get { return position; } }
         protected Physics physics;

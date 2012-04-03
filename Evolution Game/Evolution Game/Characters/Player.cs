@@ -18,6 +18,9 @@ namespace Evolution_Game
     /// </summary>
     public class Player : Character
     {
+        private bool playerLeft = false;
+        private UserInterface ui;
+
         public Player(Game g)
         {
             // TODO: Construct any child components here
@@ -36,9 +39,13 @@ namespace Evolution_Game
             spawn = pSpawn;
             box = new BoundingBox();
             physics = new Physics();
+            textures = new List<Texture2D>();
             moveSpeed = 100.0f;
             jumpSpeed = 50.0f;
+            ui = new UserInterface(g);
             game = g;
+
+            ui.Initialize();
         }
 
         /// <summary>
@@ -52,7 +59,13 @@ namespace Evolution_Game
 
         public override void LoadContent()
         {
-            texture = game.Content.Load<Texture2D>("player tex/player_tex");
+            // load in all the animation frames that the player will use
+            Texture2D texture = game.Content.Load<Texture2D>("player tex/player_cave_L01");
+            textures.Add(texture);
+
+            texture = game.Content.Load<Texture2D>("player tex/player_cave_R01");
+            textures.Add(texture);
+
             base.LoadContent();
         }
 
@@ -143,10 +156,16 @@ namespace Evolution_Game
         public override void Update(GameTime gameTime)
         {
             if (Keyboard.GetState().IsKeyDown(Keys.D))
+            {
                 position = physics.horizontalMotion(position, moveSpeed, gameTime);
+                playerLeft = false;
+            }
 
             if (Keyboard.GetState().IsKeyDown(Keys.A))
+            {
                 position = physics.horizontalMotion(position, -moveSpeed, gameTime);
+                playerLeft = true;
+            }
 
             if (Keyboard.GetState().IsKeyDown(Keys.Space))
             {
@@ -158,11 +177,22 @@ namespace Evolution_Game
             {
                 jumpSpeed = 100.0f;
             }
+
+            ui.Update(gameTime);
         }
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(texture, position, Color.White);
+            if (playerLeft)
+            {
+                spriteBatch.Draw(textures[0], position, Color.White);
+            }
+            else
+            {
+                spriteBatch.Draw(textures[1], position, Color.White);
+            }
+
+            ui.Draw(spriteBatch, health, mana, position);
         }
 
         // get/set methods

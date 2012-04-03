@@ -1,5 +1,4 @@
 Content\block tex\dirt_tex.xnb
-Content\player tex\player_tex.xnb
 Content\block tex\water_tex.xnb
 Content\block tex\mud_tex.xnb
 Content\biome tex\NORMAL_Layer0.xnb
@@ -9,3 +8,8 @@ Content\menu tex\menu_background.xnb
 Content\menu tex\newgame_tex.xnb
 Content\UI tex\cursor.xnb
 Content\misc\divider.xnb
+Content\player tex\player_cave_L01.xnb
+Content\player tex\player_cave_R01.xnb
+Content\character tex\crocodile_R01.xnb
+Content\UI tex\health.xnb
+Content\UI tex\mana.xnb

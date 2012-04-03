@@ -49,13 +49,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="player tex\player_tex.png">
-      <Name>player_tex</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="block tex\water_tex.png">
       <Name>water_tex</Name>
       <Importer>TextureImporter</Importer>
@@ -108,6 +101,42 @@
   <ItemGroup>
     <Compile Include="misc\divider.bmp">
       <Name>divider</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="player tex\player_cave_L01.png">
+      <Name>player_cave_L01</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="player tex\player_cave_R01.png">
+      <Name>player_cave_R01</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="character tex\crocodile_R01.png">
+      <Name>crocodile_R01</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="item tex\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="UI tex\health.png">
+      <Name>health</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="UI tex\mana.png">
+      <Name>mana</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>

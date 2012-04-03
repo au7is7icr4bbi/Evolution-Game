@@ -415,10 +415,10 @@ namespace Evolution_Game
         {
             //for (int i = 0; i < layers.Length; ++i)
                 //layers[i].Draw(spriteBatch, cameraPosition);
-  
+          
             foreach (Block b in blocks)
                 b.Draw(spriteBatch);
-
+             
             if (drawGrid)
             {
                 spriteBatch.Draw(dividerX, new Rectangle((int)(position.X + (width / 2)), (int)(position.Y - (height / 2)), 6, height), Color.White);

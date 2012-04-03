@@ -19,9 +19,10 @@ namespace Evolution_Game
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         World homeWorld;
-        UserInterface ui;
         Menu mainMenu;
         Player player;
+        Texture2D cursor;
+        MouseState mouse;
         bool noDraw;
 
         // performance code, used to determine frames per second and lag
@@ -63,16 +64,16 @@ namespace Evolution_Game
             homeWorld = new World(this, 0, 0, spriteBatch, player);
             homeWorld.DrawOrder = 0;
 
-            ui = new UserInterface(this);
-            ui.DrawOrder= 2;
-
             mainMenu = new Menu(this);
             mainMenu.DrawOrder = 1;
  
             // add the various component classes to components
             Components.Add(homeWorld);
-            Components.Add(ui);
             Components.Add(mainMenu);
+
+            // add the mouse cursor
+            cursor = Content.Load<Texture2D>("UI tex/cursor");
+            mouse = Mouse.GetState();
 
             base.Initialize();
         }
@@ -108,10 +109,12 @@ namespace Evolution_Game
             if (keys.IsKeyDown(Keys.Escape))
                 this.Exit();
 
-            MouseState mouse = Mouse.GetState();
+            mouse = Mouse.GetState();
             int mouseX = mouse.X;
             int mouseY = mouse.Y;
 
+
+            // main menu display logic
             if (mouse.LeftButton == ButtonState.Pressed && !noDraw)
             {
                 if (mouseX >= 625 && mouseX <= 625 + 200)
@@ -149,7 +152,7 @@ namespace Evolution_Game
 
             // TODO: Add your drawing code here
 
-            // code calculates the frames per second and writes it in the window title
+            // code calculates the frames per second and writes it in the window title, NOT within the viewport
             float elapsed =
             (float)gameTime.ElapsedGameTime.TotalSeconds;
             framecount++;
@@ -166,7 +169,13 @@ namespace Evolution_Game
                 timeSinceLastUpdate -= updateInterval;
             }
 
+            // draw components first as mouse cursor is drawn over everything
             base.Draw(gameTime);
+
+            // draws the in-game mouse cursor
+            spriteBatch.Begin();
+            spriteBatch.Draw(cursor, new Vector2(mouse.X, mouse.Y), Color.White);
+            spriteBatch.End();
         }
     }
 }
